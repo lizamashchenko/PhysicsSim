@@ -1,0 +1,15 @@
+﻿<Application x:Class="PhysicsSim.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:PhysicsSim"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <BitmapImage x:Key="Himars" UriSource="images/himars.png" />
+        <BitmapImage x:Key="HimarsLauncher" UriSource="images/himars_launcher.png" />
+        <BitmapImage x:Key="Kremlin" UriSource="images/kremlin.jpeg" />
+        <BitmapImage x:Key="KremlinOnFire" UriSource="images/kremlin_on_fire.jpeg" />
+        <BitmapImage x:Key="Missile" UriSource="images/missile.png" />
+        <BitmapImage x:Key="ConvexLens" UriSource="images/convex_lens.png" />
+        <BitmapImage x:Key="ConcaveLens" UriSource="images/concave_lens.png" />
+    </Application.Resources>
+</Application>

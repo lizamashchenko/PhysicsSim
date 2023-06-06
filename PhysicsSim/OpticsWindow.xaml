@@ -1,0 +1,49 @@
+<Window x:Class="PhysicsSim.OpticsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:PhysicsSim"
+        mc:Ignorable="d"
+        Title="OpticsWindow" Height="450" Width="800">
+    <Grid>
+        <Grid Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="True" Margin="0, 0, 5, 0" Checked="ToggleButton_OnChecked" Unchecked="ToggleButton_OnUnchecked" Name="RaysCheckBox">Show rays</CheckBox>
+            <StackPanel Grid.Row="0" Grid.Column="1" Margin="5, -3, 0, 0">
+                <ComboBox Name="LensSelector" SelectionChanged="LensSelector_OnSelectionChanged">
+                    <ComboBoxItem IsSelected="True" Content=""></ComboBoxItem>
+                    <ComboBoxItem Content="Convex Lens"></ComboBoxItem>
+                    <ComboBoxItem Content="Concave Lens"></ComboBoxItem>
+                </ComboBox>
+            </StackPanel>
+            <StackPanel Grid.Row="0" Grid.Column="2" Margin="5, -3, 0, 0">
+                <ComboBox Name="ObjectSelector" SelectionChanged="ObjectSelector_OnSelectionChanged">
+                    <ComboBoxItem IsSelected="True" Content=""></ComboBoxItem>
+                </ComboBox>
+            </StackPanel>
+            <StackPanel Grid.Row="2" Grid.Column="0" Width="100" Margin="0, 0, 5, 0">
+                <Label HorizontalAlignment="Center">Focus</Label>
+                <TextBox Text="{Binding ElementName=FocusSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Width="30" TextAlignment="Center" />
+                <Slider Maximum="100" TickPlacement="BottomRight" TickFrequency="10" Name="FocusSlider" ValueChanged="FocusSlider_OnValueChanged"></Slider>
+            </StackPanel>
+            <StackPanel Grid.Row="2" Grid.Column="1" Width="100" Margin="5, 0, 0, 0">
+                <Label HorizontalAlignment="Center">Distance</Label>
+                <TextBox Text="{Binding ElementName=DiameterSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Width="30" TextAlignment="Center" />
+                <Slider Maximum="1000" TickPlacement="BottomRight" TickFrequency="10" Name="DiameterSlider" ValueChanged="DiameterSlider_OnValueChanged"></Slider>
+            </StackPanel>
+            <Canvas Grid.Row="1" Grid.ColumnSpan="4" Grid.Column="0" Name="field" Width="Auto" Height="Auto">
+            </Canvas>
+        </Grid>
+    </Grid>
+</Window>

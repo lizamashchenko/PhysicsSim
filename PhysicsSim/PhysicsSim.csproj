@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net7.0-windows</TargetFramework>
+        <Nullable>enable</Nullable>
+        <UseWPF>true</UseWPF>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <None Remove="images\himars.png" />
+      <Resource Include="images\himars.png" />
+      <None Remove="images\kremlin-transformed.jpeg" />
+      <None Remove="images\moscow-kremlin-afire-national-landmark-russia-lit-fire-smoke-flames-danger-destruction-devastation-65477992-transformed.jpeg" />
+      <None Remove="images\himarslauncher_-removebg-preview.png" />
+      <None Remove="images\missile-removebg-preview.png" />
+      <Resource Include="images\missile.png" />
+      <None Remove="images\concave_lens.png" />
+      <Resource Include="images\concave_lens.png" />
+      <None Remove="images\convex_lens.png" />
+      <Resource Include="images\convex_lens.png" />
+      <None Remove="images\himars_launcher.png" />
+      <Resource Include="images\himars_launcher.png" />
+      <None Remove="images\kremlin.jpeg" />
+      <Resource Include="images\kremlin.jpeg" />
+      <None Remove="images\daffy.png" />
+      <Resource Include="images\daffy.png" />
+      <None Remove="images\cat.png" />
+      <Resource Include="images\cat.png" />
+      <None Remove="images\dog.png" />
+      <Resource Include="images\dog.png" />
+      <None Remove="images\person.png" />
+      <Resource Include="images\person.png" />
+      <None Remove="images\kremlin_on_fire.jpeg" />
+      <Resource Include="images\kremlin_on_fire.jpeg" />
+      <None Remove="images\physics.jpg" />
+      <Resource Include="images\physics.jpg" />
+      <None Remove="images\optics.png" />
+      <Resource Include="images\optics.png" />
+      <None Remove="images\motion.jpg" />
+      <Resource Include="images\motion.jpg" />
+    </ItemGroup>
+
+</Project>
