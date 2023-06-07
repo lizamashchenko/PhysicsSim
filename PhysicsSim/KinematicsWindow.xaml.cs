@@ -41,33 +41,64 @@ public partial class KinematicsWindow : Window
     private const double airResistance = 0.05;
     private const double mass = 300;
     private bool airResistanceOn = false;
-    
+
+    private List<FlyingObject> objects;
+    private List<string> objectNames = new List<string>();
+
     DispatcherTimer timer = new DispatcherTimer();
 
     public KinematicsWindow()
     {
         InitializeComponent();
+        CreateObjects();
         himarsLauncherLowLeft = new Point(5, 40 - himarsLauncher.ActualHeight);
         missile.Source = new BitmapImage(new Uri("pack://application:,,,/images/missile.png"));
         missile.Width = 100;
         missile.Visibility = Visibility.Hidden;
 
-        kremlin.Source = new BitmapImage(new Uri("pack://application:,,,/images/kremlin.jpeg"));
-        kremlin.Width = kremlinWidth;
+        kremlin = new Image
+        {
+            Source = new BitmapImage(new Uri("pack://application:,,,/images/kremlin.jpeg")),
+            Width = kremlinWidth
+        };
         Panel.SetZIndex(kremlin, 0);
-        kremlinOnFire.Source = new BitmapImage(new Uri("pack://application:,,,/images/kremlin_on_fire.jpeg"));
-        kremlinOnFire.Width = kremlinWidth;
-        kremlinOnFire.Visibility = Visibility.Hidden;
-        Panel.SetZIndex(kremlinOnFire, 0);
+        kremlinOnFire = new Image
+        {
+            Source = new BitmapImage(new Uri("pack://application:,,,/images/kremlin_on_fire.jpeg")),
+            Width = kremlinWidth,
+            Visibility = Visibility.Hidden
+        };
         Canvas.SetBottom(kremlin, 0);
         Canvas.SetBottom(kremlinOnFire, 0);
         Canvas.SetLeft(kremlin, kremlinDistance);
         Canvas.SetLeft(kremlinOnFire, kremlinDistance);
 
+        Panel.SetZIndex(kremlinOnFire, 0);
         Panel.SetZIndex(missile, 1);
+        Panel.SetZIndex(himarsLauncher, 2);
+        
         field.Children.Add(missile);
         field.Children.Add(kremlin);
         field.Children.Add(kremlinOnFire);
+    }
+
+    private void CreateObjects()
+    {
+        objectNames.Add("Missile");
+        objectNames.Add("Cannonball");
+        objectNames.Add("Superman");
+
+        foreach (string obj in objectNames)
+        {
+            ComboBoxItem item = new ComboBoxItem()
+            {
+                Content = obj,
+            };
+            ObjectSelector.Items.Add(item);
+        }
+        // objects.Add(new FlyingObject("pack://application:,,,/images/superman.png", 100));
+        // objects.Add(new FlyingObject("pack://application:,,,/images/missile.png", 200));
+        // objects.Add(new FlyingObject("pack://application:,,,/images/cannonball.png", 400));
     }
     
     private void SpeedSlider_OnValueChanged(object sender, TextChangedEventArgs textChangedEventArgs)
@@ -251,5 +282,9 @@ public partial class KinematicsWindow : Window
         {
             MessageBox.Show("Input a correct numeric value");
         }
+    }
+
+    private void ObjectSelector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
     }
 }
