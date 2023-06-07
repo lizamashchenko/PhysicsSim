@@ -40,7 +40,7 @@
             <TextBox Text="{Binding ElementName=AngleSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Width="Auto" TextAlignment="Center" Name="AngleTextBox" TextChanged="AngleTextBox_OnTextChanged"/>
             <Slider Maximum="90" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" Name="AngleSlider"></Slider>
         </StackPanel>
-        <Canvas Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5" Name="field"><!--MouseLeftButtonDown="Field_OnMouseDown" MouseLeftButtonUp="Field_OnMouseUp" MouseMove="Field_OnMouseMove"-->
+        <Canvas Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5" Name="field">
             <Image Source="{StaticResource Himars}" Height="75" Canvas.Left="0" Canvas.Bottom="0" Name="Himars"></Image>
             <Image Source="{StaticResource HimarsLauncher}" Height="30" Canvas.Left="5" Canvas.Bottom="40" Name="himarsLauncher"></Image>
         </Canvas>

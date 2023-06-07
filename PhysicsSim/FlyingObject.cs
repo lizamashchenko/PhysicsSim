@@ -9,6 +9,7 @@ namespace PhysicsSim;
 public class FlyingObject
 {
     private Image image;
+    private string name = "";
     private double weight;
     
     public FlyingObject()
@@ -21,8 +22,13 @@ public class FlyingObject
         this.image = new Image();
         image.Source = new BitmapImage(new Uri(imageSrc));
         image.Width = 100;
+        if (imageSrc.Contains("cannonball"))
+        {
+            image.Height = 30;
+            name = "cannonball";
+        }
         image.Visibility = Visibility.Hidden;
-        Panel.SetZIndex(image, 0);
+        Panel.SetZIndex(image, 1);
         this.weight = weight;
     }
 
@@ -44,6 +50,7 @@ public class FlyingObject
     {
         return weight;
     }
+
     public void SetObject(double x, double y, double angle)
     {
         double canvasWidth = ((Canvas)image.Parent).ActualWidth;
@@ -51,8 +58,16 @@ public class FlyingObject
         double imageWidth = image.ActualWidth;
         double imageHeight = image.ActualHeight;
 
-        Canvas.SetLeft(image, x - imageHeight / 2);
-        Canvas.SetTop(image, canvasHeight - y - imageHeight - 10);
-        image.RenderTransform = new RotateTransform(360 - angle, imageWidth / 2, imageHeight);
+        if (name == "cannonball")
+        {
+            Canvas.SetLeft(image, x - imageHeight - imageHeight / 2);
+            Canvas.SetTop(image, canvasHeight - y - imageHeight);
+        }
+        else
+        {
+            Canvas.SetLeft(image, x - imageHeight - imageHeight / 2);
+            Canvas.SetTop(image, canvasHeight - y - imageHeight - imageHeight / 2);
+            image.RenderTransform = new RotateTransform(360 - angle, imageWidth / 2, imageHeight);
+        }
     }
 }

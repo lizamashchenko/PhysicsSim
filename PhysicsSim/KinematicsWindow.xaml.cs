@@ -103,6 +103,7 @@ public partial class KinematicsWindow : Window
     
     private void SpeedSlider_OnValueChanged(object sender, TextChangedEventArgs textChangedEventArgs)
     {
+        StopAnimation();
         try
         {
             speed = SpeedSlider.Value;
@@ -119,6 +120,11 @@ public partial class KinematicsWindow : Window
         {
             timer.Stop();
             timer.Tick -= MoveObject;
+        }
+
+        if (currentObject != null)
+        {
+            currentObject.Hide();
         }
     }
     private void FireButton_OnClick(object sender, RoutedEventArgs e)
@@ -209,16 +215,19 @@ public partial class KinematicsWindow : Window
 
     private void ToggleButton_OnChecked(object sender, RoutedEventArgs e)
     {
+        StopAnimation();
         airResistanceOn = true;
     }
 
     private void ToggleButton_OnUnchecked(object sender, RoutedEventArgs e)
     {
+        StopAnimation();
         airResistanceOn = false;
     }
 
     private void AngleTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
     {
+        StopAnimation();
         try
         {
             himarsAngle = AngleSlider.Value;
@@ -233,6 +242,8 @@ public partial class KinematicsWindow : Window
 
     private void ObjectSelector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
+        StopAnimation();
+
         if (field == null)
             return;
         ComboBoxItem selectedItem = (ComboBoxItem)ObjectSelector.SelectedItem;
