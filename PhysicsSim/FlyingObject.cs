@@ -27,6 +27,11 @@ public class FlyingObject
             image.Height = 30;
             name = "cannonball";
         }
+
+        if (imageSrc.Contains("superman"))
+        {
+            name = "superman";
+        }
         image.Visibility = Visibility.Hidden;
         Panel.SetZIndex(image, 1);
         this.weight = weight;
@@ -62,6 +67,12 @@ public class FlyingObject
         {
             Canvas.SetLeft(image, x - imageHeight - imageHeight / 2);
             Canvas.SetTop(image, canvasHeight - y - imageHeight);
+        }
+        else if (name == "superman")
+        {
+            Canvas.SetLeft(image, x - imageHeight);
+            Canvas.SetTop(image, canvasHeight - y - imageHeight);
+            image.RenderTransform = new RotateTransform(360 - angle, imageWidth / 2, imageHeight);
         }
         else
         {
