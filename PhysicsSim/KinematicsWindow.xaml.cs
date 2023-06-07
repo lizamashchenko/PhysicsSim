@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mime;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -18,7 +19,6 @@ public partial class KinematicsWindow : Window
     private Point startPosition;
     private double initialAngle;
 
-
     private double himarsAngle = 0;
     private Point himarsLauncherLowLeft;
     private Point himarsLauncherLowRigth;
@@ -27,7 +27,6 @@ public partial class KinematicsWindow : Window
     private double kremlinWidth = 200;
     private double kremlinHeight = 100;
 
-    private Image missile = new Image();
     private Image kremlin = new Image();
     private Image kremlinOnFire = new Image();
     
@@ -39,11 +38,12 @@ public partial class KinematicsWindow : Window
     private int pointInTime = 0;
     private const double Gravity = 9.8;
     private const double airResistance = 0.05;
-    private const double mass = 300;
+    private double mass = 0;
     private bool airResistanceOn = false;
 
-    private List<FlyingObject> objects;
+    private Dictionary<string, FlyingObject> objects = new Dictionary<string, FlyingObject>();
     private List<string> objectNames = new List<string>();
+    private FlyingObject currentObject;
 
     DispatcherTimer timer = new DispatcherTimer();
 
@@ -52,10 +52,7 @@ public partial class KinematicsWindow : Window
         InitializeComponent();
         CreateObjects();
         himarsLauncherLowLeft = new Point(5, 40 - himarsLauncher.ActualHeight);
-        missile.Source = new BitmapImage(new Uri("pack://application:,,,/images/missile.png"));
-        missile.Width = 100;
-        missile.Visibility = Visibility.Hidden;
-
+        
         kremlin = new Image
         {
             Source = new BitmapImage(new Uri("pack://application:,,,/images/kremlin.jpeg")),
@@ -74,10 +71,8 @@ public partial class KinematicsWindow : Window
         Canvas.SetLeft(kremlinOnFire, kremlinDistance);
 
         Panel.SetZIndex(kremlinOnFire, 0);
-        Panel.SetZIndex(missile, 1);
         Panel.SetZIndex(himarsLauncher, 2);
         
-        field.Children.Add(missile);
         field.Children.Add(kremlin);
         field.Children.Add(kremlinOnFire);
     }
@@ -96,9 +91,14 @@ public partial class KinematicsWindow : Window
             };
             ObjectSelector.Items.Add(item);
         }
-        // objects.Add(new FlyingObject("pack://application:,,,/images/superman.png", 100));
-        // objects.Add(new FlyingObject("pack://application:,,,/images/missile.png", 200));
-        // objects.Add(new FlyingObject("pack://application:,,,/images/cannonball.png", 400));
+        objects.Add("Superman", new FlyingObject("pack://application:,,,/images/superman.png", 100));
+        objects.Add("Missile", new FlyingObject("pack://application:,,,/images/missile.png", 200));
+        objects.Add("Cannonball", new FlyingObject("pack://application:,,,/images/cannonball.png", 400));
+
+        foreach (FlyingObject f in objects.Values)
+        {
+            field.Children.Add(f.getImage());
+        }
     }
     
     private void SpeedSlider_OnValueChanged(object sender, TextChangedEventArgs textChangedEventArgs)
@@ -115,150 +115,97 @@ public partial class KinematicsWindow : Window
 
     private void StopAnimation()
     {
-        if (timer != null && timer.IsEnabled)
+        if (timer.IsEnabled)
         {
             timer.Stop();
-            timer.Tick -= MoveMissile;
-            timer.Tick -= MoveMissileAir;
+            timer.Tick -= MoveObject;
         }
     }
     private void FireButton_OnClick(object sender, RoutedEventArgs e)
     {
         StopAnimation();
 
-        if (speed != 0 && airResistanceCheck.IsChecked == false)
+        if (speed != 0 && currentObject.getWeight() != 0)
         {
             pointInTime = RefreshRate;
-            SetMissile();
+            SetObject();
             StartAnimation();
-        }
-        else if (speed != 0 && airResistanceCheck.IsChecked == true)
-        {
-            pointInTime = RefreshRate;
-            SetMissile();
-            StartAnimationAir();
-        }
+        } 
         else
         {
             MessageBox.Show("Invalid speed value!");
         }
     }
 
-    private void SetMissile()
+    private void SetObject()
     {
-        double offsetX = Math.Sin(himarsAngle) * (himarsLauncher.ActualHeight - missile.ActualHeight);
-        double offsetY = Math.Sin(90 - himarsAngle) * (himarsLauncher.ActualHeight - missile.ActualHeight);
-
-        Point MissileBottomLeft = new Point(himarsLauncherLowLeft.X, himarsLauncherLowLeft.Y);
-        // Point MissileBottomLeft = new Point(himarsLauncherLowLeft.X - offsetX, himarsLauncherLowLeft.Y + offsetY);
-        Canvas.SetLeft(missile, himarsLauncherLowLeft.X);
-        Canvas.SetBottom(missile, himarsLauncherLowLeft.Y);
-        missile.RenderTransform = new RotateTransform(360 - himarsAngle, himarsLauncherLowLeft.X, himarsLauncherLowLeft.Y);
-        missile.Visibility = Visibility.Visible;
-
-        startPosition = MissileBottomLeft;
+        currentObject.SetObject(himarsLauncherLowLeft.X, himarsLauncherLowLeft.Y, himarsAngle);
+        startPosition = himarsLauncherLowLeft;
     }
     private void StartAnimation()
     {
-        timer = new DispatcherTimer();
-        timer.Interval = TimeSpan.FromMilliseconds(RefreshRate);
-        timer.Tick += MoveMissile;
-        timer.Start();
-    }
-    private void StartAnimationAir()
-    {
-        timer = new DispatcherTimer();
+        currentObject.Show();
         speedY = speed * Math.Sin(himarsAngle * Math.PI / 180);
         speedX = speed * Math.Cos(himarsAngle * Math.PI / 180);
+        timer = new DispatcherTimer();
         timer.Interval = TimeSpan.FromMilliseconds(RefreshRate);
-        timer.Tick += MoveMissileAir;
+        timer.Tick += MoveObject;
         timer.Start();
     }
 
-    private void MoveMissile(object sender, EventArgs e)
+    private void MoveObject(object sender, EventArgs e)
     {
-        double newX = startPosition.X + speed * Math.Cos(himarsAngle * Math.PI / 180) * pointInTime / 1000;
-        double newY = startPosition.Y + speed * Math.Sin(himarsAngle * Math.PI / 180) * pointInTime / 1000 - 0.5 * Gravity * pointInTime / 1000 * pointInTime / 1000;
+        double newX;
+        double newY;
 
+        if (!airResistanceOn)
+        {
+            newX = startPosition.X + speed * Math.Cos(himarsAngle * Math.PI / 180) * pointInTime / 1000;
+            newY =  startPosition.Y + speed * Math.Sin(himarsAngle * Math.PI / 180) * pointInTime / 1000 - 0.5 * Gravity * pointInTime / 1000 * pointInTime / 1000;
+        }
+        else
+        {
+            if (speedY > 0)
+            {
+                double d = (airResistance * speedY * speedY) / (40 * mass) - Gravity / 20;
+                speedY -= (airResistance * speedY * speedY) / (40 * mass) + Gravity / 20;
+            }
+            else
+                speedY += (airResistance * speedY * speedY) / (40 * mass) - Gravity / 20;
+            speedX -= (airResistance * speedX * speedX) / (40 * mass);
+
+            newX = startPosition.X + speedX * pointInTime / 1000;
+            newY = startPosition.Y + speedY * pointInTime / 1000 - 0.5 * Gravity * pointInTime / 1000 * pointInTime / 1000;
+        }
+        
         double newAngle = Math.Atan2(newY - startPosition.Y, newX - startPosition.X) * (180 / Math.PI);
-        missile.RenderTransform = new RotateTransform(360 - newAngle, startPosition.X, startPosition.Y);
 
         if (newX > kremlinDistance && newX < kremlinDistance + kremlinWidth && newY > 0 && newY < kremlinHeight)
         {
             kremlin.Visibility = Visibility.Hidden;
             kremlinOnFire.Visibility = Visibility.Visible;
-            missile.Visibility = Visibility.Hidden;
+            currentObject.Hide();
+        }
+        else if (newX > this.ActualWidth || newX < 0 || newY > this.ActualHeight || newY < 0)
+        {
+            currentObject.Hide();
         }
         else
         {
-            Canvas.SetLeft(missile, newX);
-            Canvas.SetBottom(missile, newY);
+            currentObject.SetObject(newX, newY, newAngle);
             pointInTime += RefreshRate;
         }
+        Ellipse el = new Ellipse()
+        {
+            Height = 2,
+            Width = 2,
+            Fill = new SolidColorBrush(Colors.Aqua)
+        };
+        Canvas.SetBottom(el, newY);
+        Canvas.SetLeft(el, newX);
+        field.Children.Add(el);
+
     }
-    private void MoveMissileAir(object sender, EventArgs e)
-    {
-        if (speedY > 0)
-        {
-            double d = (airResistance * speedY * speedY) / (40 * mass) - Gravity / 20;
-            speedY -= (airResistance * speedY * speedY) / (40 * mass) + Gravity / 20;
-        }
-        else
-            speedY += (airResistance * speedY * speedY) / (40 * mass) - Gravity / 20;
-        speedX -= (airResistance * speedX * speedX) / (40 * mass);
-
-        double newX = startPosition.X + speedX * pointInTime / 1000;
-        double newY = startPosition.Y + speedY * pointInTime / 1000 - 0.5 * Gravity * pointInTime / 1000 * pointInTime / 1000;
-
-        double newAngle = Math.Atan2(newY - startPosition.Y, newX - startPosition.X) * (180 / Math.PI);
-        missile.RenderTransform = new RotateTransform(360 - newAngle, startPosition.X, startPosition.Y);
-
-        if (newX > kremlinDistance && newX < kremlinDistance + kremlinWidth && newY > 0 && newY < kremlinHeight)
-        {
-            kremlin.Visibility = Visibility.Hidden;
-            kremlinOnFire.Visibility = Visibility.Visible;
-            missile.Visibility = Visibility.Hidden;
-        }
-        else
-        {
-            Canvas.SetLeft(missile, newX);
-            Canvas.SetBottom(missile, newY);
-            pointInTime += RefreshRate;
-        }
-    }
-
-    // private void Field_OnMouseDown(object sender, MouseButtonEventArgs e)
-    // {
-    //     isDragging = true;
-    //     startPosition = e.GetPosition(field);
-    //     initialAngle = himarsLauncher.RenderTransform is RotateTransform rotateTransform
-    //         ? rotateTransform.Angle
-    //         : 0;
-    //     himarsLauncher.CaptureMouse();
-    // }
-    //
-    // private void Field_OnMouseUp(object sender, MouseButtonEventArgs e)
-    // {
-    //     isDragging = false;
-    //     himarsLauncher.ReleaseMouseCapture();
-    // }
-    //
-    // private void Field_OnMouseMove(object sender, MouseEventArgs e)
-    // {
-    //     if (isDragging)
-    //     {
-    //         Point currentPosition = e.GetPosition(field);
-    //         double dx = currentPosition.X - startPosition.X;
-    //         double dy = startPosition.Y - currentPosition.Y;
-    //         double angle = Math.Atan2(dy, dx) * (180 / Math.PI);
-    //         double rotationAngle = initialAngle + (360 - angle);
-    //
-    //         RotateTransform rotateTransform = new RotateTransform(rotationAngle, himarsLauncherLowLeft.X, himarsLauncherLowLeft.Y);
-    //         himarsLauncher.RenderTransform = rotateTransform;
-    //
-    //         himarsAngle = angle;
-    //     }
-    // }
 
     private void ToggleButton_OnChecked(object sender, RoutedEventArgs e)
     {
@@ -286,5 +233,11 @@ public partial class KinematicsWindow : Window
 
     private void ObjectSelector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
+        if (field == null)
+            return;
+        ComboBoxItem selectedItem = (ComboBoxItem)ObjectSelector.SelectedItem;
+        string selected = selectedItem.Content.ToString();
+        currentObject = objects[selected] == null ? new FlyingObject() : objects[selected];
+        mass = currentObject.getWeight();
     }
 }

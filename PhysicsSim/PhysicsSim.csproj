@@ -39,6 +39,10 @@
       <Resource Include="images\optics.png" />
       <None Remove="images\motion.jpg" />
       <Resource Include="images\motion.jpg" />
+      <None Remove="images\cannonball.png" />
+      <Resource Include="images\cannonball.png" />
+      <None Remove="images\superman.png" />
+      <Resource Include="images\superman.png" />
     </ItemGroup>
 
 </Project>
