@@ -14,7 +14,7 @@ public class FlyingObject
     
     public FlyingObject()
     {
-        
+        image = new Image();
     }
 
     public FlyingObject(string imageSrc, double weight)
@@ -41,7 +41,7 @@ public class FlyingObject
     {
         image.Visibility = Visibility.Hidden;
     }
-    public Image getImage()
+    public Image GetImage()
     {
         return image;
     }
@@ -51,14 +51,13 @@ public class FlyingObject
         image.Visibility = Visibility.Visible;
     }
 
-    public double getWeight()
+    public double GetWeight()
     {
         return weight;
     }
 
     public void SetObject(double x, double y, double angle)
     {
-        double canvasWidth = ((Canvas)image.Parent).ActualWidth;
         double canvasHeight = ((Canvas)image.Parent).ActualHeight;
         double imageWidth = image.ActualWidth;
         double imageHeight = image.ActualHeight;

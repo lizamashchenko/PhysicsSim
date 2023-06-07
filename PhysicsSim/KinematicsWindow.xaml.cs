@@ -97,7 +97,7 @@ public partial class KinematicsWindow : Window
 
         foreach (FlyingObject f in objects.Values)
         {
-            field.Children.Add(f.getImage());
+            field.Children.Add(f.GetImage());
         }
     }
     
@@ -131,7 +131,7 @@ public partial class KinematicsWindow : Window
     {
         StopAnimation();
 
-        if (speed != 0 && currentObject.getWeight() != 0)
+        if (speed != 0 && currentObject.GetWeight() != 0)
         {
             pointInTime = RefreshRate;
             SetObject();
@@ -249,6 +249,6 @@ public partial class KinematicsWindow : Window
         ComboBoxItem selectedItem = (ComboBoxItem)ObjectSelector.SelectedItem;
         string selected = selectedItem.Content.ToString();
         currentObject = objects[selected] == null ? new FlyingObject() : objects[selected];
-        mass = currentObject.getWeight();
+        mass = currentObject.GetWeight();
     }
 }
