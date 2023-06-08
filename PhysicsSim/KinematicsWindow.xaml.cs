@@ -45,6 +45,9 @@ public partial class KinematicsWindow : Window
     private List<string> objectNames = new List<string>();
     private FlyingObject currentObject;
 
+    private List<Ellipse> trajectories = new List<Ellipse>();
+    private List<TrajectoryPoint> trajectoryPoints = new List<TrajectoryPoint>();
+
     DispatcherTimer timer = new DispatcherTimer();
 
     public KinematicsWindow()
@@ -201,16 +204,37 @@ public partial class KinematicsWindow : Window
             currentObject.SetObject(newX, newY, newAngle);
             pointInTime += RefreshRate;
         }
-        Ellipse el = new Ellipse()
-        {
-            Height = 2,
-            Width = 2,
-            Fill = new SolidColorBrush(Colors.Aqua)
-        };
-        Canvas.SetBottom(el, newY);
-        Canvas.SetLeft(el, newX);
-        field.Children.Add(el);
 
+        if (pointInTime % 1000 == 0)
+        {
+            TrajectoryPoint p = new TrajectoryPoint(newX, newY, pointInTime / 1000.0);
+            Canvas.SetBottom(p.GetPoint(), newY);
+            Canvas.SetLeft(p.GetPoint(), newX);
+            Canvas.SetZIndex(p.GetPoint(), 1);
+            p.showPoint();
+            field.Children.Add(p.GetPoint());
+            
+            Canvas.SetBottom(p.GetInfo(), newY);
+            Canvas.SetLeft(p.GetInfo(), newX);
+            Canvas.SetZIndex(p.GetInfo(), 0);
+            field.Children.Add(p.GetInfo());
+            
+            trajectoryPoints.Add(p);
+        }
+        else
+        {
+            Ellipse el = new Ellipse()
+            {
+                Height = 2,
+                Width = 2,
+                Fill = new SolidColorBrush(Colors.Aqua)
+            };
+            trajectories.Add(el);
+            Canvas.SetBottom(el, newY);
+            Canvas.SetLeft(el, newX);
+            Canvas.SetZIndex(el, 0);
+            field.Children.Add(el);
+        }
     }
 
     private void ToggleButton_OnChecked(object sender, RoutedEventArgs e)
@@ -250,5 +274,22 @@ public partial class KinematicsWindow : Window
         string selected = selectedItem.Content.ToString();
         currentObject = objects[selected] == null ? new FlyingObject() : objects[selected];
         mass = currentObject.GetWeight();
+    }
+
+    private void ClearButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        foreach (Ellipse el in trajectories)
+        {
+            field.Children.Remove(el);
+        }
+
+        foreach (TrajectoryPoint tp in trajectoryPoints)
+        {
+            field.Children.Remove(tp.GetInfo());
+            field.Children.Remove(tp.GetPoint());
+        }
+
+        trajectories = new List<Ellipse>();
+        trajectoryPoints = new List<TrajectoryPoint>();
     }
 }

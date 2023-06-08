@@ -32,8 +32,9 @@
                 <ComboBoxItem IsSelected="True" Content=""></ComboBoxItem>
             </ComboBox>
         </StackPanel>
-        <StackPanel Grid.Row="0" Grid.Column="4" HorizontalAlignment="Right" MinWidth="100" MaxWidth="200">
-            <Button MinWidth="50" MaxWidth="100" Height="50" Click="FireButton_OnClick">Fire</Button>
+        <StackPanel Grid.Row="0" Grid.Column="4" HorizontalAlignment="Right" MinWidth="100" MaxWidth="405" Orientation="Horizontal">
+            <Button MinWidth="50" MaxWidth="200" Height="50" Click="ClearButton_OnClick" Margin="0, 0, 5, 0">Clear</Button>
+            <Button MinWidth="50" MaxWidth="200" Height="50" Click="FireButton_OnClick">Fire</Button>
         </StackPanel>
         <StackPanel Grid.Row="0"  Grid.Column="1" MinWidth="100" MaxWidth="200" HorizontalAlignment="Left">
             <Label HorizontalAlignment="Center">Angle</Label>
