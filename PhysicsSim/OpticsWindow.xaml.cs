@@ -166,7 +166,7 @@ public partial class OpticsWindow : Window
 
         foreach (Tuple<Image, Image> t in projections)
         {
-            t.Item2.Height = f * projections[objectIndex].Item1.ActualHeight / objectDistance;
+            t.Item2.Height = Math.Abs(f) * projections[objectIndex].Item1.ActualHeight / objectDistance;
             if (isConvex)
             {
                 t.Item2.RenderTransform = new ScaleTransform(1, -1);
@@ -176,11 +176,12 @@ public partial class OpticsWindow : Window
             }
             else
             {
-                t.Item2.RenderTransform = new ScaleTransform(1, 1);
-                Canvas.SetLeft(t.Item2, lensCenter.X - f - t.Item2.ActualWidth / 2);
-                Canvas.SetBottom(t.Item2, field.ActualHeight / 2);
-                projectionBottom = new Point(lensCenter.X - f - t.Item2.ActualWidth / 2, field.ActualHeight / 2);
+                f = -focalDistance * objectDistance / (objectDistance + focalDistance);
 
+                t.Item2.RenderTransform = new ScaleTransform(1, 1);
+                Canvas.SetLeft(t.Item2, lensCenter.X + f - t.Item2.ActualWidth / 2);
+                Canvas.SetBottom(t.Item2, field.ActualHeight / 2);
+                projectionBottom = new Point(lensCenter.X + f - t.Item2.ActualWidth / 2, field.ActualHeight / 2);
             }
         }
     }
@@ -195,7 +196,7 @@ public partial class OpticsWindow : Window
         catch (Exception exception)
         {
             DistanceSlider.Value = 1;
-            MessageBox.Show("Input a correct numeric value");
+            MessageBox.Show("Input a correct numeric value + ");
         }
     }
 
@@ -210,7 +211,7 @@ public partial class OpticsWindow : Window
         catch (Exception exception)
         {
             FocusSlider.Value = 1;
-            MessageBox.Show("Input a correct numeric value");
+            MessageBox.Show("Input a correct numeric value"  + exception.Message);
         }
     }
 
@@ -258,36 +259,6 @@ public partial class OpticsWindow : Window
 
         if (isConvex)
         {
-            // Line principalRay1 = new Line()
-            // {
-            //     X1 = field.ActualWidth / 2 - objectDistance + projections[objectIndex].Item1.ActualWidth / 2,
-            //     Y1 = field.ActualHeight / 2 - projections[objectIndex].Item1.ActualHeight,
-            //     X2 = field.ActualWidth / 2  - focalDistance + focusRadius,
-            //     Y2 = field.ActualHeight / 2,
-            //     StrokeThickness = 1,
-            //     Stroke = new SolidColorBrush(Colors.Red),
-            //     Visibility = RaysCheckBox.IsChecked == true ? Visibility.Visible : Visibility.Hidden
-            // };
-            // Line principalRay2 = new Line()
-            // {
-            //     X1 = field.ActualWidth / 2 - objectDistance + projections[objectIndex].Item1.ActualWidth / 2,
-            //     Y1 = field.ActualHeight / 2 - projections[objectIndex].Item1.ActualHeight,
-            //     X2 = field.ActualWidth / 2 + focalDistance * objectDistance / (objectDistance - focalDistance) + projections[objectIndex].Item2.ActualWidth / 2,
-            //     Y2 = field.ActualHeight / 2 + projections[objectIndex].Item2.ActualHeight,
-            //     StrokeThickness = 1,
-            //     Stroke = new SolidColorBrush(Colors.Green),
-            //     Visibility = RaysCheckBox.IsChecked == true ? Visibility.Visible : Visibility.Hidden
-            // };
-            // Line principalRay3 = new Line()
-            // {
-            //     X1 = field.ActualWidth / 2 - focalDistance + focusRadius,
-            //     Y1 = field.ActualHeight / 2,
-            //     X2 = field.ActualWidth / 2 + focalDistance * objectDistance / (objectDistance - focalDistance) + projections[objectIndex].Item2.ActualWidth / 2,
-            //     Y2 = field.ActualHeight / 2 + projections[objectIndex].Item2.ActualHeight,
-            //     StrokeThickness = 1,
-            //     Stroke = new SolidColorBrush(Colors.Blue),
-            //     Visibility = RaysCheckBox.IsChecked == true ? Visibility.Visible : Visibility.Hidden
-            // };
             Line principalRay1 = new Line()
             {
                 X1 = field.ActualWidth / 2 - objectDistance,
@@ -358,37 +329,82 @@ public partial class OpticsWindow : Window
             double objectBottomY = field.ActualHeight / 2;
             double imageTopY = field.ActualHeight / 2 - imageHeight;
 
-            // Incident Ray
-            Line incidentRay = new Line()
+           Line principalRay1 = new Line()
             {
-                X1 = field.ActualWidth / 2 - objectDistance + projections[objectIndex].Item1.ActualWidth / 2,
-                Y1 = objectBottomY,
+                X1 = field.ActualWidth / 2 - objectDistance,
+                Y1 = field.ActualHeight / 2 - projections[objectIndex].Item1.ActualHeight,
                 X2 = field.ActualWidth / 2,
-                Y2 = field.ActualHeight / 2,
+                Y2 = field.ActualHeight / 2 - projections[objectIndex].Item1.ActualHeight,
                 StrokeThickness = 1,
                 Stroke = new SolidColorBrush(Colors.Red),
                 Visibility = RaysCheckBox.IsChecked == true ? Visibility.Visible : Visibility.Hidden
             };
-
-            // Refracted Ray
-            double refractedRayX = field.ActualWidth / 2 - (focalDistance - objectDistance) * (imageTopY - field.ActualHeight / 2) / focalDistance;
-            Line refractedRay = new Line()
+            Line principalRay12 = new Line()
             {
                 X1 = field.ActualWidth / 2,
-                Y1 = field.ActualHeight / 2,
-                X2 = refractedRayX,
-                Y2 = imageTopY,
+                Y1 = field.ActualHeight / 2 - projections[objectIndex].Item1.ActualHeight,
+                X2 = field.ActualWidth / 2 - focalDistance,
+                Y2 = field.ActualHeight / 2,
+                StrokeThickness = 1,
+                StrokeDashArray= {2, 2},
+                Stroke = new SolidColorBrush(Colors.Red),
+                Visibility = RaysCheckBox.IsChecked == true ? Visibility.Visible : Visibility.Hidden
+            };
+            Line principalRay2 = new Line()
+            {
+                X1 = field.ActualWidth / 2 - objectDistance,
+                Y1 = field.ActualHeight / 2 - projections[objectIndex].Item1.ActualHeight,
+                X2 = field.ActualWidth / 2,
+                Y2 = field.ActualHeight / 2,
+                StrokeThickness = 1,
+                Stroke = new SolidColorBrush(Colors.Green),
+                Visibility = RaysCheckBox.IsChecked == true ? Visibility.Visible : Visibility.Hidden
+            };
+            Line principalRay3 = new Line()
+            {
+                X1 = field.ActualWidth / 2 - objectDistance,
+                Y1 = field.ActualHeight / 2 - projections[objectIndex].Item1.ActualHeight,
+                X2 = field.ActualWidth / 2,
+                Y2 = field.ActualHeight / 2 - projections[objectIndex].Item2.ActualHeight,
                 StrokeThickness = 1,
                 Stroke = new SolidColorBrush(Colors.Blue),
                 Visibility = RaysCheckBox.IsChecked == true ? Visibility.Visible : Visibility.Hidden
             };
+            Line principalRay32 = new Line()
+            {
+                X1 = field.ActualWidth / 2,
+                Y1 = field.ActualHeight / 2 - projections[objectIndex].Item2.ActualHeight,
+                X2 = field.ActualWidth / 2 + f,
+                Y2 = field.ActualHeight / 2 - projections[objectIndex].Item2.ActualHeight,
+                StrokeThickness = 1,
+                Stroke = new SolidColorBrush(Colors.Blue),
+                StrokeDashArray= {2, 2},
+                Visibility = RaysCheckBox.IsChecked == true ? Visibility.Visible : Visibility.Hidden
+            };
+            Line principalRay33 = new Line()
+            {
+                X1 = field.ActualWidth / 2,
+                Y1 = field.ActualHeight / 2 - projections[objectIndex].Item2.ActualHeight,
+                X2 = field.ActualWidth / 2 + focalDistance,
+                Y2 = field.ActualHeight / 2,
+                StrokeThickness = 1,
+                Stroke = new SolidColorBrush(Colors.Blue),
+                StrokeDashArray= {2, 2},
+                Visibility = RaysCheckBox.IsChecked == true ? Visibility.Visible : Visibility.Hidden
+            };
+            field.Children.Add(principalRay1);
+            field.Children.Add(principalRay12);
+            field.Children.Add(principalRay2);
+            field.Children.Add(principalRay3);
+            field.Children.Add(principalRay32);
+            field.Children.Add(principalRay33);
 
-            field.Children.Add(incidentRay);
-            field.Children.Add(refractedRay);
-
-            rays.Add(incidentRay);
-            rays.Add(refractedRay);
-            
+            rays.Add(principalRay1);
+            rays.Add(principalRay12);
+            rays.Add(principalRay2);
+            rays.Add(principalRay3);
+            rays.Add(principalRay32);
+            rays.Add(principalRay33);
         }
     }
 
