@@ -166,7 +166,7 @@ public partial class OpticsWindow : Window
 
         foreach (Tuple<Image, Image> t in projections)
         {
-            t.Item2.Height = focalDistance * lensHeight / objectDistance;
+            t.Item2.Height = f * projections[objectIndex].Item1.ActualHeight / objectDistance;
             if (isConvex)
             {
                 t.Item2.RenderTransform = new ScaleTransform(1, -1);
