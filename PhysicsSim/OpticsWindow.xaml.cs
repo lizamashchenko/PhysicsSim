@@ -60,6 +60,7 @@ public partial class OpticsWindow : Window
                 Visibility = Visibility.Hidden
             };
             projections.Add(new Tuple<Image, Image>(image, projection));
+            
             ComboBoxItem item = new ComboBoxItem
             {
                 Content = objectNames[i],
@@ -72,12 +73,15 @@ public partial class OpticsWindow : Window
 
     private void SetElements()
     {
-        xAxis.X1 = 0;
-        xAxis.X2 = field.ActualWidth;
-        xAxis.Y1 = field.ActualHeight / 2;
-        xAxis.Y2 = field.ActualHeight / 2;
-        xAxis.StrokeThickness = 2;
-        xAxis.Stroke = new SolidColorBrush(Colors.Black);
+        xAxis = new Line
+        {
+            X1 = 0,
+            X2 = field.ActualWidth,
+            Y1 = field.ActualHeight / 2,
+            Y2 = field.ActualHeight / 2,
+            StrokeThickness = 2,
+            Stroke = new SolidColorBrush(Colors.Black)
+        };
         field.Children.Add(xAxis);
 
         Line yAxis = new Line()
@@ -103,7 +107,6 @@ public partial class OpticsWindow : Window
             Width = 2 * focusRadius,
             Fill = new SolidColorBrush(Colors.Aqua)
         };
-       
         setFocuses();
         field.Children.Add(f1);
         field.Children.Add(f2);
@@ -128,7 +131,17 @@ public partial class OpticsWindow : Window
         }
 
         FocusSlider.Value = focalDistance;
-        DiameterSlider.Value = objectDistance;
+        DistanceSlider.Value = objectDistance;
+
+        Ellipse dist = new Ellipse()
+        {
+            Height = 2,
+            Width = 2,
+            Fill = new SolidColorBrush(Colors.Red)
+        };
+        Canvas.SetBottom(dist, field.ActualHeight / 2);
+        Canvas.SetLeft(dist, field.ActualWidth / 2 - objectDistance);
+        field.Children.Add(dist);
     }
 
     private void setFocuses()
@@ -144,8 +157,8 @@ public partial class OpticsWindow : Window
         lensCenter = new Point(field.ActualWidth / 2, field.ActualHeight / 2);
 
         Canvas.SetBottom(projections[objectIndex].Item1, field.ActualHeight / 2);
-        Canvas.SetLeft(projections[objectIndex].Item1, field.ActualWidth / 2 - objectDistance);
-        objectBottom = new Point(field.ActualWidth / 2 - objectDistance, field.ActualHeight / 2);
+        Canvas.SetLeft(projections[objectIndex].Item1, field.ActualWidth / 2 - objectDistance - projections[objectIndex].Item1.ActualWidth / 2);
+        objectBottom = new Point(field.ActualWidth / 2 - objectDistance  - projections[objectIndex].Item1.ActualWidth / 2, field.ActualHeight / 2);
 
         double f = focalDistance * objectDistance / (objectDistance - focalDistance);
 
@@ -156,7 +169,7 @@ public partial class OpticsWindow : Window
             {
                 t.Item2.RenderTransform = new ScaleTransform(1, -1);
                 Canvas.SetLeft(t.Item2, lensCenter.X + f - t.Item2.ActualWidth / 2);
-                Canvas.SetTop(t.Item2, field.ActualHeight / 2 + focalDistance * lensHeight / objectDistance);
+                Canvas.SetTop(t.Item2, field.ActualHeight / 2);
             }
             else
             {
@@ -170,12 +183,13 @@ public partial class OpticsWindow : Window
     {
         try
         {
-            objectDistance = DiameterSlider.Value;
-            Canvas.SetLeft(projections[objectIndex].Item1, field.ActualWidth / 2 - objectDistance);
+            objectDistance = DistanceSlider.Value;
+            Canvas.SetLeft(projections[objectIndex].Item1, field.ActualWidth / 2 - objectDistance - projections[objectIndex].Item1.ActualWidth / 2);
             Update();
         }
         catch (Exception exception)
         {
+            DistanceSlider.Value = 1;
             MessageBox.Show("Input a correct numeric value");
         }
     }
@@ -190,6 +204,7 @@ public partial class OpticsWindow : Window
         }
         catch (Exception exception)
         {
+            FocusSlider.Value = 1;
             MessageBox.Show("Input a correct numeric value");
         }
     }
@@ -270,7 +285,7 @@ public partial class OpticsWindow : Window
             // };
             Line principalRay1 = new Line()
             {
-                X1 = field.ActualWidth / 2 - objectDistance + projections[objectIndex].Item1.ActualWidth / 2,
+                X1 = field.ActualWidth / 2 - objectDistance,
                 Y1 = field.ActualHeight / 2 - projections[objectIndex].Item1.ActualHeight,
                 X2 = field.ActualWidth / 2,
                 Y2 = field.ActualHeight / 2 + projections[objectIndex].Item2.ActualHeight,

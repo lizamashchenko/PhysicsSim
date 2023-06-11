@@ -39,8 +39,8 @@
             </StackPanel>
             <StackPanel Grid.Row="2" Grid.Column="1" Width="100" Margin="5, 0, 0, 0">
                 <Label HorizontalAlignment="Center">Distance</Label>
-                <TextBox Text="{Binding ElementName=DiameterSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Width="30" TextAlignment="Center" />
-                <Slider Maximum="1000" TickPlacement="BottomRight" TickFrequency="10" Name="DiameterSlider" ValueChanged="DiameterSlider_OnValueChanged"></Slider>
+                <TextBox Text="{Binding ElementName=DistanceSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Width="30" TextAlignment="Center" />
+                <Slider Maximum="1000" TickPlacement="BottomRight" TickFrequency="10" Name="DistanceSlider" ValueChanged="DiameterSlider_OnValueChanged"></Slider>
             </StackPanel>
             <Canvas Grid.Row="1" Grid.ColumnSpan="4" Grid.Column="0" Name="field" Width="Auto" Height="Auto">
             </Canvas>

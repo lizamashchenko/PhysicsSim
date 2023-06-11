@@ -109,7 +109,7 @@ public class TrajectoryPoint
         };
         Label timeLabel = new Label()
         {
-            Content = "Time: " + time,
+            Content = "Time: " + time + " s",
         };
             
         Style borderStyle = new Style(typeof(Border));
