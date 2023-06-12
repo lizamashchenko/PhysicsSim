@@ -43,6 +43,15 @@
       <Resource Include="images\cannonball.png" />
       <None Remove="images\superman.png" />
       <Resource Include="images\superman.png" />
+      <None Remove="images\kremlin.png" />
+      <Resource Include="images\kremlin.png" />
+      <None Remove="images\kremlin_on_fire.png" />
+      <Resource Include="images\kremlin_on_fire.png" />
+      <None Remove="images\logo-removebg-preview.ico" />
+      <None Remove="images\logo.png" />
+      <Resource Include="images\logo.png" />
+      <None Remove="images\logo.ico" />
+      <Resource Include="images\logo.ico" />
     </ItemGroup>
 
 </Project>

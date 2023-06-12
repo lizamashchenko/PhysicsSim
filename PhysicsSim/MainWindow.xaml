@@ -5,11 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PhysicsSim"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid Margin="10">
-        <Grid.Background>  
-            <ImageBrush ImageSource="images/physics.jpg"/>     
-        </Grid.Background>
+        Title="PHYSICS DEMO" Height="450" Width="800" Icon="images/logo.ico" WindowState="Maximized">
+    
+    <Window.Resources>
+        <SolidColorBrush x:Key="lightGreen">#D8F7D2</SolidColorBrush>
+        <SolidColorBrush x:Key="darkGreen">#1B5B0E</SolidColorBrush>
+        <SolidColorBrush x:Key="brightGreen">#2CFC00</SolidColorBrush>
+        <SolidColorBrush x:Key="logo">#0C343C</SolidColorBrush>
+    </Window.Resources>
+    <Grid Background="{StaticResource logo}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width = "*" />
             <ColumnDefinition Width = "*" />
@@ -18,7 +22,9 @@
             <RowDefinition Height = "1*" />
             <RowDefinition Height = "3*" />
         </Grid.RowDefinitions>
-        <Label Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">Name</Label>
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Image Height="50" Source="images/logo.png" ></Image>
+        </StackPanel>
         <DockPanel Grid.Row = "1" Grid.Column="0">
             <Button DockPanel.Dock="Top" Margin="0, 0, 5, 10" Width="100" Height="40" Click="OpticsButton_OnClick" Content="Optics">
                 <Button.Resources>
@@ -27,24 +33,50 @@
                     </Style>
                 </Button.Resources>
             </Button>
-            <Grid Margin="5, 0, 0, 0">
-                <Grid.Background>  
-                    <ImageBrush ImageSource="images/optics.png"/>     
-                </Grid.Background>
+            <Grid  HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Border Width="200" Height="Auto" Margin="12,12,8,0" VerticalAlignment="Top" BorderThickness=".5" CornerRadius="18">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="5" Opacity=".5" ShadowDepth="3" />
+                    </Border.Effect>
+                    <Border CornerRadius="15">
+                        <Grid>
+                            <Border Name="Mask" Background="White" BorderBrush="{StaticResource logo}" BorderThickness=".5" CornerRadius="13"/>
+                            <StackPanel>
+                                <Image Source="/images/optics.png" />
+                                <StackPanel.OpacityMask>
+                                    <VisualBrush Visual="{Binding ElementName=Mask}" />
+                                </StackPanel.OpacityMask>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Border>
             </Grid>
         </DockPanel>
         <DockPanel Grid.Row = "1" Grid.Column="1">
             <Button DockPanel.Dock="Top" Margin="5, 0, 0, 10" Width="100" Height="40" Click="KinematicsButton_OnClick" Content="Kinematics">
                 <Button.Resources>
                     <Style TargetType="Border">
-                        <Setter Property="CornerRadius" Value="10"></Setter>
+                        <Setter Property="CornerRadius" Value="10"/>
                     </Style>
                 </Button.Resources>
             </Button>
-            <Grid Margin="5, 0, 0, 0">
-                <Grid.Background>  
-                    <ImageBrush ImageSource="images/motion.jpg"/>     
-                </Grid.Background>
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Border Width="200" Height="Auto" Margin="12,12,8,0" VerticalAlignment="Top" BorderThickness=".5" CornerRadius="18">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="5" Opacity=".5" ShadowDepth="3" />
+                    </Border.Effect>
+                    <Border CornerRadius="15">
+                        <Grid>
+                            <Border Name="Mask2" Background="White" BorderBrush="{StaticResource logo}" BorderThickness=".5" CornerRadius="13" />
+                            <StackPanel>
+                                <Image Source="/images/motion.jpg" />
+                                <StackPanel.OpacityMask>
+                                    <VisualBrush Visual="{Binding ElementName=Mask2}" />
+                                </StackPanel.OpacityMask>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Border>
             </Grid>
         </DockPanel>
     </Grid>

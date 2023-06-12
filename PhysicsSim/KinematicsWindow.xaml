@@ -5,8 +5,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:PhysicsSim"
         mc:Ignorable="d"
-        Title="KinematicsWindow" Height="450" Width="800">
-    <Grid Margin="10">
+        Title="KinematicsWindow" Height="450" Width="800" WindowState="Maximized">
+    <Window.Resources>
+        <SolidColorBrush x:Key="lightGreen">#D8F7D2</SolidColorBrush>
+    </Window.Resources>
+    <Grid Background="{StaticResource lightGreen}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
@@ -25,16 +28,15 @@
             <Slider Maximum="100" TickPlacement="BottomRight" TickFrequency="0.1" IsSnapToTickEnabled="True" Name="SpeedSlider"></Slider>
         </StackPanel>
         <StackPanel Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center">
-            <CheckBox IsChecked="False" Margin="0, 0, 0, 0" Checked="ToggleButton_OnChecked" Unchecked="ToggleButton_OnUnchecked" Name="airResistanceCheck">Air resistance</CheckBox>
+            <CheckBox IsChecked="False" Margin="0, 10, 0, 0" Checked="ToggleButton_OnChecked" Unchecked="ToggleButton_OnUnchecked" Name="airResistanceCheck">Air resistance</CheckBox>
         </StackPanel>
-        <StackPanel Grid.Row="0" Grid.Column="3" Margin="5, -3, 0, 0">
+        <StackPanel Grid.Row="0" Grid.Column="3" Margin="5, 10, 0, 0">
             <ComboBox Name="ObjectSelector" SelectionChanged="ObjectSelector_OnSelectionChanged">
-                <ComboBoxItem IsSelected="True" Content=""></ComboBoxItem>
             </ComboBox>
         </StackPanel>
         <StackPanel Grid.Row="0" Grid.Column="4" HorizontalAlignment="Right" MinWidth="100" MaxWidth="405" Orientation="Horizontal">
             <Button MinWidth="50" MaxWidth="200" Height="50" Click="ClearButton_OnClick" Margin="0, 0, 5, 0">Clear</Button>
-            <Button MinWidth="50" MaxWidth="200" Height="50" Click="FireButton_OnClick">Fire</Button>
+            <Button MinWidth="50" MaxWidth="200" Height="50" Click="FireButton_OnClick" Margin="0, 0, 5, 0">Fire</Button>
         </StackPanel>
         <StackPanel Grid.Row="0"  Grid.Column="1" MinWidth="100" MaxWidth="200" HorizontalAlignment="Left">
             <Label HorizontalAlignment="Center">Angle</Label>

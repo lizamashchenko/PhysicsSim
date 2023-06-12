@@ -5,8 +5,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:PhysicsSim"
         mc:Ignorable="d"
-        Title="OpticsWindow" Height="450" Width="800">
-    <Grid>
+        Title="OpticsWindow" Height="450" Width="800" WindowState="Maximized">
+    <Window.Resources>
+        <SolidColorBrush x:Key="lightGreen">#D8F7D2</SolidColorBrush>
+    </Window.Resources>
+    <Grid Background="{StaticResource lightGreen}">
         <Grid Margin="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>

@@ -58,14 +58,16 @@ public partial class KinematicsWindow : Window
         
         kremlin = new Image
         {
-            Source = new BitmapImage(new Uri("pack://application:,,,/images/kremlin.jpeg")),
-            Width = kremlinWidth
+            Source = new BitmapImage(new Uri("pack://application:,,,/images/kremlin.png")),
+            Width = kremlinWidth,
+            Height = kremlinHeight
         };
         Panel.SetZIndex(kremlin, 0);
         kremlinOnFire = new Image
         {
-            Source = new BitmapImage(new Uri("pack://application:,,,/images/kremlin_on_fire.jpeg")),
+            Source = new BitmapImage(new Uri("pack://application:,,,/images/kremlin_on_fire.png")),
             Width = kremlinWidth,
+            Height = kremlinHeight,
             Visibility = Visibility.Hidden
         };
         Canvas.SetBottom(kremlin, 0);
@@ -134,7 +136,7 @@ public partial class KinematicsWindow : Window
     {
         StopAnimation();
 
-        if (speed != 0 && currentObject.GetWeight() != 0)
+        if (speed != 0 && currentObject != null && currentObject.GetWeight() != 0)
         {
             pointInTime = RefreshRate;
             SetObject();
@@ -142,7 +144,7 @@ public partial class KinematicsWindow : Window
         } 
         else
         {
-            MessageBox.Show("Invalid speed value!");
+            MessageBox.Show(speed == 0 ? "Invalid speed value!" : "Please select an object");
         }
     }
 
@@ -227,7 +229,7 @@ public partial class KinematicsWindow : Window
             {
                 Height = 2,
                 Width = 2,
-                Fill = new SolidColorBrush(Colors.Aqua)
+                Fill = (Brush)Application.Current.MainWindow.FindResource("brightGreen"),
             };
             trajectories.Add(el);
             Canvas.SetBottom(el, newY);

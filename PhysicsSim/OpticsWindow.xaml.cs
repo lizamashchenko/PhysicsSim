@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.DirectoryServices.ActiveDirectory;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -15,6 +13,7 @@ public partial class OpticsWindow : Window
     private Image concaveLens = new Image();
     private Image convexLens = new Image();
     private Line xAxis = new Line();
+    private Line yAxis = new Line();
     private bool isFirstStart = false;
 
     private double lensHeight = 100;
@@ -85,18 +84,18 @@ public partial class OpticsWindow : Window
             Y1 = field.ActualHeight / 2,
             Y2 = field.ActualHeight / 2,
             StrokeThickness = 2,
-            Stroke = new SolidColorBrush(Colors.Black)
+            Stroke = (Brush)Application.Current.MainWindow.FindResource("darkGreen"),
         };
         field.Children.Add(xAxis);
 
-        Line yAxis = new Line()
+        yAxis = new Line()
         {
             X1 = field.ActualWidth / 2,
             X2 = field.ActualWidth / 2,
             Y1 = field.ActualHeight,
             Y2 = 0,
             StrokeThickness = 2,
-            Stroke = new SolidColorBrush(Colors.Gray),
+            Stroke = (Brush)Application.Current.MainWindow.FindResource("darkGreen"),
         };
         field.Children.Add(yAxis);
 
@@ -104,13 +103,15 @@ public partial class OpticsWindow : Window
         {
             Height = 2 * focusRadius,
             Width = 2 * focusRadius,
-            Fill = new SolidColorBrush(Colors.Aqua)
+            Stroke = (Brush)Application.Current.MainWindow.FindResource("brightGreen"),
+            Fill = (Brush)Application.Current.MainWindow.FindResource("brightGreen"),
         };
         f2 = new Ellipse()
         {
             Height = 2 * focusRadius,
             Width = 2 * focusRadius,
-            Fill = new SolidColorBrush(Colors.Aqua)
+            Stroke = (Brush)Application.Current.MainWindow.FindResource("brightGreen"),
+            Fill = (Brush)Application.Current.MainWindow.FindResource("brightGreen"),
         };
         setFocuses();
         field.Children.Add(f1);
@@ -119,12 +120,12 @@ public partial class OpticsWindow : Window
         concaveLens.Height = lensHeight;
         convexLens.Height = lensHeight;
         
-        Canvas.SetLeft(concaveLens, field.ActualWidth / 2 - concaveWidth / 2);
+        Canvas.SetLeft(concaveLens, field.ActualWidth / 2 - concaveWidth / 2 + 2);
         Canvas.SetBottom(concaveLens, field.ActualHeight / 2 - lensHeight / 2);
         concaveLens.Visibility = Visibility.Hidden;
         field.Children.Add(concaveLens);
 
-        Canvas.SetLeft(convexLens, field.ActualWidth / 2 - convexWidth / 2);
+        Canvas.SetLeft(convexLens, field.ActualWidth / 2 - convexWidth / 2 + 2);
         Canvas.SetBottom(convexLens, field.ActualHeight / 2 - lensHeight / 2);
         convexLens.Visibility = Visibility.Hidden;
         field.Children.Add(convexLens);
