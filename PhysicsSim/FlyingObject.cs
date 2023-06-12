@@ -6,6 +6,7 @@ using System.Windows.Media.Imaging;
 
 namespace PhysicsSim;
 
+// клас об'єктів, що ми запускаємо
 public class FlyingObject
 {
     private Image image;
@@ -16,7 +17,8 @@ public class FlyingObject
     {
         image = new Image();
     }
-
+    
+    // ініціалізація малюнку 
     public FlyingObject(string imageSrc, double weight)
     {
         this.image = new Image();
@@ -37,6 +39,7 @@ public class FlyingObject
         this.weight = weight;
     }
 
+    // ховаємо малюнок
     public void Hide()
     {
         image.Visibility = Visibility.Hidden;
@@ -46,6 +49,7 @@ public class FlyingObject
         return image;
     }
 
+    // показуємо малюнок
     public void Show()
     {
         image.Visibility = Visibility.Visible;
@@ -56,6 +60,7 @@ public class FlyingObject
         return weight;
     }
 
+    // ставимо об'єкт на задану позицію
     public void SetObject(double x, double y, double angle)
     {
         double canvasHeight = ((Canvas)image.Parent).ActualHeight;

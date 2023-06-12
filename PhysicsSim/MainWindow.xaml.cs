@@ -25,11 +25,14 @@ namespace PhysicsSim
             InitializeComponent();
         }
 
+        // обробка події - натискання на кнопку "Оптика" (відкриваємо нове вікно)
         private void OpticsButton_OnClick(object sender, RoutedEventArgs e)
         {
             Window optic = new OpticsWindow();
             optic.Show();
         }
+        
+        // обробка події - натискання на кнопку "Кінетика" (відкриваємо нове вікно)
         private void KinematicsButton_OnClick(object sender, RoutedEventArgs e)
         {
             Window kinematic = new KinematicsWindow();

@@ -62,7 +62,7 @@ public class TrajectoryPoint
         {
             Height = 3,
             Width = 3,
-            Fill = (Brush)Application.Current.MainWindow.FindResource("darkGreen"),
+            Fill = (Brush)Application.Current.MainWindow.FindResource("logoBright"),
         };
         point.PreviewMouseLeftButtonDown += PointOnMouseLeftButtonDown;
     }

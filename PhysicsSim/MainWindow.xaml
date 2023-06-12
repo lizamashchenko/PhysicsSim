@@ -8,10 +8,13 @@
         Title="PHYSICS DEMO" Height="450" Width="800" Icon="images/logo.ico" WindowState="Maximized">
     
     <Window.Resources>
-        <SolidColorBrush x:Key="lightGreen">#D8F7D2</SolidColorBrush>
+        <SolidColorBrush x:Key="lightGreen">#AFDCE5</SolidColorBrush>
         <SolidColorBrush x:Key="darkGreen">#1B5B0E</SolidColorBrush>
         <SolidColorBrush x:Key="brightGreen">#2CFC00</SolidColorBrush>
         <SolidColorBrush x:Key="logo">#0C343C</SolidColorBrush>
+        <SolidColorBrush x:Key="logoLight">#4C7C85</SolidColorBrush>
+        <SolidColorBrush x:Key="logoBright">#FFE59A</SolidColorBrush>
+        
     </Window.Resources>
     <Grid Background="{StaticResource logo}">
         <Grid.ColumnDefinitions>
@@ -23,18 +26,20 @@
             <RowDefinition Height = "3*" />
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Image Height="50" Source="images/logo.png" ></Image>
+            <Image Height="100" Source="images/logo.png" ></Image>
         </StackPanel>
         <DockPanel Grid.Row = "1" Grid.Column="0">
-            <Button DockPanel.Dock="Top" Margin="0, 0, 5, 10" Width="100" Height="40" Click="OpticsButton_OnClick" Content="Optics">
+            <Button DockPanel.Dock="Top" Margin="0, 0, 5, 10" Width="200" Height="75" Click="OpticsButton_OnClick" 
+                    Content="Optics" FontFamily="Constantia" FontSize="25" Foreground="{StaticResource logoBright}"
+                    Background="{StaticResource logoLight}" BorderBrush="{StaticResource logoLight}">
                 <Button.Resources>
                     <Style TargetType="Border">
-                        <Setter Property="CornerRadius" Value="10"></Setter>
+                        <Setter Property="CornerRadius" Value="20"></Setter>
                     </Style>
                 </Button.Resources>
             </Button>
             <Grid  HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Border Width="200" Height="Auto" Margin="12,12,8,0" VerticalAlignment="Top" BorderThickness=".5" CornerRadius="18">
+                <Border Width="400" Height="Auto" Margin="12,12,8,0" VerticalAlignment="Top" BorderThickness=".5" CornerRadius="18">
                     <Border.Effect>
                         <DropShadowEffect BlurRadius="5" Opacity=".5" ShadowDepth="3" />
                     </Border.Effect>
@@ -53,15 +58,17 @@
             </Grid>
         </DockPanel>
         <DockPanel Grid.Row = "1" Grid.Column="1">
-            <Button DockPanel.Dock="Top" Margin="5, 0, 0, 10" Width="100" Height="40" Click="KinematicsButton_OnClick" Content="Kinematics">
+            <Button DockPanel.Dock="Top" Margin="5, 0, 0, 10" Width="200" Height="75" Click="KinematicsButton_OnClick" 
+                    Content="Kinematics"  FontFamily="Constantia" FontSize="25" Foreground="{StaticResource logoBright}"
+                    Background="{StaticResource logoLight}" BorderBrush="{StaticResource logoLight}">
                 <Button.Resources>
                     <Style TargetType="Border">
-                        <Setter Property="CornerRadius" Value="10"/>
+                        <Setter Property="CornerRadius" Value="20"/>
                     </Style>
                 </Button.Resources>
             </Button>
             <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Border Width="200" Height="Auto" Margin="12,12,8,0" VerticalAlignment="Top" BorderThickness=".5" CornerRadius="18">
+                <Border Width="400" Height="Auto" Margin="12,12,8,0" VerticalAlignment="Top" BorderThickness=".5" CornerRadius="18">
                     <Border.Effect>
                         <DropShadowEffect BlurRadius="5" Opacity=".5" ShadowDepth="3" />
                     </Border.Effect>

@@ -5,9 +5,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:PhysicsSim"
         mc:Ignorable="d"
-        Title="OpticsWindow" Height="450" Width="800" WindowState="Maximized">
+        Title="OpticsWindow" Height="450" Width="800" WindowState="Maximized" Icon="images/logo.ico">
     <Window.Resources>
-        <SolidColorBrush x:Key="lightGreen">#D8F7D2</SolidColorBrush>
+        <SolidColorBrush x:Key="lightGreen">#D4F0F5</SolidColorBrush>
+        <SolidColorBrush x:Key="logoLight">#4C7C85</SolidColorBrush>
+        <SolidColorBrush x:Key="logo">#0C343C</SolidColorBrush>
+        <SolidColorBrush x:Key="logoBright">#FFE59A</SolidColorBrush>
     </Window.Resources>
     <Grid Background="{StaticResource lightGreen}">
         <Grid Margin="10">
@@ -22,28 +25,30 @@
                 <RowDefinition Height="3*"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
-            <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="False" Margin="0, 0, 5, 0" Checked="ToggleButton_OnChecked" Unchecked="ToggleButton_OnUnchecked" Name="RaysCheckBox">Show rays</CheckBox>
+            <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="False" Margin="0, 0, 5, 0" 
+                      Checked="ToggleButton_OnChecked" Unchecked="ToggleButton_OnUnchecked" Name="RaysCheckBox" 
+                      FontFamily="Constantia" FontSize="15">Show rays</CheckBox>
             <StackPanel Grid.Row="0" Grid.Column="1" Margin="5, -3, 0, 0">
-                <ComboBox Name="LensSelector" SelectionChanged="LensSelector_OnSelectionChanged">
+                <ComboBox Name="LensSelector" SelectionChanged="LensSelector_OnSelectionChanged" FontFamily="Constantia" FontSize="15" Height="Auto">
                     <ComboBoxItem IsSelected="True" Content=""></ComboBoxItem>
-                    <ComboBoxItem Content="Convex Lens"></ComboBoxItem>
-                    <ComboBoxItem Content="Concave Lens"></ComboBoxItem>
+                    <ComboBoxItem Content="Convex Lens" FontFamily="Constantia" FontSize="15"></ComboBoxItem>
+                    <ComboBoxItem Content="Concave Lens" FontFamily="Constantia" FontSize="15"></ComboBoxItem>
                 </ComboBox>
             </StackPanel>
             <StackPanel Grid.Row="0" Grid.Column="2" Margin="5, -3, 0, 0">
-                <ComboBox Name="ObjectSelector" SelectionChanged="ObjectSelector_OnSelectionChanged">
+                <ComboBox Name="ObjectSelector" SelectionChanged="ObjectSelector_OnSelectionChanged" FontFamily="Constantia" FontSize="15" Height="Auto">
                     <ComboBoxItem IsSelected="True" Content=""></ComboBoxItem>
                 </ComboBox>
             </StackPanel>
-            <StackPanel Grid.Row="2" Grid.Column="0" Width="100" Margin="0, 0, 5, 0">
-                <Label HorizontalAlignment="Center">Focus</Label>
-                <TextBox Text="{Binding ElementName=FocusSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Width="30" TextAlignment="Center" />
-                <Slider Maximum="100" TickPlacement="BottomRight" TickFrequency="10" Name="FocusSlider" ValueChanged="FocusSlider_OnValueChanged"></Slider>
+            <StackPanel Grid.Row="2" Grid.Column="0" Width="100" Margin="0, 0, 5, 0" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{StaticResource logoLight}">
+                <Label HorizontalAlignment="Center" FontFamily="Constantia" FontSize="15" Foreground="{StaticResource logoBright}">Focus</Label>
+                <TextBox Text="{Binding ElementName=FocusSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Width="Auto" TextAlignment="Center" Background="{StaticResource logoLight}" BorderBrush="{StaticResource logoLight}" Foreground="{StaticResource logoBright}"/>
+                <Slider Maximum="100" TickPlacement="BottomRight" TickFrequency="1" IsSnapToTickEnabled="True" Name="FocusSlider" ValueChanged="FocusSlider_OnValueChanged"  Foreground="{StaticResource logoBright}"></Slider>
             </StackPanel>
-            <StackPanel Grid.Row="2" Grid.Column="1" Width="100" Margin="5, 0, 0, 0">
-                <Label HorizontalAlignment="Center">Distance</Label>
-                <TextBox Text="{Binding ElementName=DistanceSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Width="30" TextAlignment="Center" />
-                <Slider Maximum="1000" TickPlacement="BottomRight" TickFrequency="10" Name="DistanceSlider" ValueChanged="DiameterSlider_OnValueChanged"></Slider>
+            <StackPanel Grid.Row="2" Grid.Column="1" Width="100" Margin="5, 0, 0, 0" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{StaticResource logoLight}">
+                <Label HorizontalAlignment="Center" FontFamily="Constantia" FontSize="15" Foreground="{StaticResource logoBright}">Distance</Label>
+                <TextBox Text="{Binding ElementName=DistanceSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Width="Auto" TextAlignment="Center" Background="{StaticResource logoLight}" BorderBrush="{StaticResource logoLight}" Foreground="{StaticResource logoBright}"/>
+                <Slider Maximum="1000" TickPlacement="BottomRight" TickFrequency="10" IsSnapToTickEnabled="True" Name="DistanceSlider" ValueChanged="DiameterSlider_OnValueChanged" Foreground="{StaticResource logoBright}"></Slider>
             </StackPanel>
             <Canvas Grid.Row="1" Grid.ColumnSpan="4" Grid.Column="0" Name="field" Width="Auto" Height="Auto">
             </Canvas>

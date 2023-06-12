@@ -15,7 +15,7 @@ namespace PhysicsSim;
 
 public partial class KinematicsWindow : Window
 {
-    private bool isDragging = false;
+    // параметри пускової установки
     private Point startPosition;
     private double initialAngle;
 
@@ -23,6 +23,7 @@ public partial class KinematicsWindow : Window
     private Point himarsLauncherLowLeft;
     private Point himarsLauncherLowRigth;
 
+    // параметри цілі
     private double kremlinDistance = 500;
     private double kremlinWidth = 200;
     private double kremlinHeight = 100;
@@ -30,9 +31,8 @@ public partial class KinematicsWindow : Window
     private Image kremlin = new Image();
     private Image kremlinOnFire = new Image();
     
-    
+    // програмні змінні
     private const int RefreshRate = 10;
-    private const double ScaleFactor = 10;
     private double speed = 0;
     private double speedX, speedY;
     private int pointInTime = 0;
@@ -41,6 +41,7 @@ public partial class KinematicsWindow : Window
     private double mass = 0;
     private bool airResistanceOn = false;
 
+    // списки
     private Dictionary<string, FlyingObject> objects = new Dictionary<string, FlyingObject>();
     private List<string> objectNames = new List<string>();
     private FlyingObject currentObject;
@@ -48,14 +49,17 @@ public partial class KinematicsWindow : Window
     private List<Ellipse> trajectories = new List<Ellipse>();
     private List<TrajectoryPoint> trajectoryPoints = new List<TrajectoryPoint>();
 
+    // таймер анімації
     DispatcherTimer timer = new DispatcherTimer();
 
     public KinematicsWindow()
     {
         InitializeComponent();
+        // ініціалізація об'єктів
         CreateObjects();
         himarsLauncherLowLeft = new Point(5, 40 - himarsLauncher.ActualHeight);
         
+        // ініціалізація цілі
         kremlin = new Image
         {
             Source = new BitmapImage(new Uri("pack://application:,,,/images/kremlin.png")),
@@ -70,6 +74,7 @@ public partial class KinematicsWindow : Window
             Height = kremlinHeight,
             Visibility = Visibility.Hidden
         };
+        // встановлення цілі на полотні
         Canvas.SetBottom(kremlin, 0);
         Canvas.SetBottom(kremlinOnFire, 0);
         Canvas.SetLeft(kremlin, kremlinDistance);
@@ -82,17 +87,21 @@ public partial class KinematicsWindow : Window
         field.Children.Add(kremlinOnFire);
     }
 
+    // створюємо об'єкти запуску
     private void CreateObjects()
     {
         objectNames.Add("Missile");
         objectNames.Add("Cannonball");
         objectNames.Add("Superman");
 
+        // створюємо випадаючий список об'єктів
         foreach (string obj in objectNames)
         {
             ComboBoxItem item = new ComboBoxItem()
             {
                 Content = obj,
+                FontFamily = new FontFamily("Constantia"),
+                FontSize = 15
             };
             ObjectSelector.Items.Add(item);
         }
@@ -100,17 +109,21 @@ public partial class KinematicsWindow : Window
         objects.Add("Missile", new FlyingObject("pack://application:,,,/images/missile.png", 200));
         objects.Add("Cannonball", new FlyingObject("pack://application:,,,/images/cannonball.png", 400));
 
+        // додаємо елементи на полотно
         foreach (FlyingObject f in objects.Values)
         {
             field.Children.Add(f.GetImage());
         }
     }
     
+    // обробка події - зміна швидкості запуску
     private void SpeedSlider_OnValueChanged(object sender, TextChangedEventArgs textChangedEventArgs)
     {
+        // зупиняємо попередні анімації
         StopAnimation();
         try
         {
+            // змініємо параметри запуску
             speed = SpeedSlider.Value;
         }
         catch (Exception exception)
@@ -119,6 +132,7 @@ public partial class KinematicsWindow : Window
         }
     }
 
+    // зупинка анімації
     private void StopAnimation()
     {
         if (timer.IsEnabled)
@@ -132,10 +146,14 @@ public partial class KinematicsWindow : Window
             currentObject.Hide();
         }
     }
+    
+    // обробка події - натиснута кнопка "Запуск"
     private void FireButton_OnClick(object sender, RoutedEventArgs e)
     {
+        // зупиняємо всі попередні анімації
         StopAnimation();
 
+        // ініціалізуємо початкові значення 
         if (speed != 0 && currentObject != null && currentObject.GetWeight() != 0)
         {
             pointInTime = RefreshRate;
@@ -148,11 +166,14 @@ public partial class KinematicsWindow : Window
         }
     }
 
+    // встановлюємо об'єкт на новій позиції
     private void SetObject()
     {
         currentObject.SetObject(himarsLauncherLowLeft.X, himarsLauncherLowLeft.Y, himarsAngle);
         startPosition = himarsLauncherLowLeft;
     }
+    
+    // програвач анімації
     private void StartAnimation()
     {
         currentObject.Show();
@@ -164,11 +185,13 @@ public partial class KinematicsWindow : Window
         timer.Start();
     }
 
+    // переміщення об'єкту 
     private void MoveObject(object sender, EventArgs e)
     {
         double newX;
         double newY;
 
+        // різна логіка вираховування нової координати в залкжностф від опору повітря
         if (!airResistanceOn)
         {
             newX = startPosition.X + speed * Math.Cos(himarsAngle * Math.PI / 180) * pointInTime / 1000;
@@ -178,7 +201,6 @@ public partial class KinematicsWindow : Window
         {
             if (speedY > 0)
             {
-                double d = (airResistance * speedY * speedY) / (40 * mass) - Gravity / 20;
                 speedY -= (airResistance * speedY * speedY) / (40 * mass) + Gravity / 20;
             }
             else
@@ -189,14 +211,17 @@ public partial class KinematicsWindow : Window
             newY = startPosition.Y + speedY * pointInTime / 1000 - 0.5 * Gravity * pointInTime / 1000 * pointInTime / 1000;
         }
         
+        // новий кут нахилу об'єкта
         double newAngle = Math.Atan2(newY - startPosition.Y, newX - startPosition.X) * (180 / Math.PI);
 
+        // перевірка влучання
         if (newX > kremlinDistance && newX < kremlinDistance + kremlinWidth && newY > 0 && newY < kremlinHeight)
         {
             kremlin.Visibility = Visibility.Hidden;
             kremlinOnFire.Visibility = Visibility.Visible;
             currentObject.Hide();
         }
+        // перевірка вильоту за межі
         else if (newX > this.ActualWidth || newX < 0 || newY > this.ActualHeight || newY < 0)
         {
             currentObject.Hide();
@@ -207,6 +232,7 @@ public partial class KinematicsWindow : Window
             pointInTime += RefreshRate;
         }
 
+        // створення нової точки з інформацією кожну секунду
         if (pointInTime % 1000 == 0)
         {
             TrajectoryPoint p = new TrajectoryPoint(newX, newY, pointInTime / 1000.0);
@@ -223,13 +249,14 @@ public partial class KinematicsWindow : Window
             
             trajectoryPoints.Add(p);
         }
+        // створення звичайної точки, що потім формує траекторію
         else
         {
             Ellipse el = new Ellipse()
             {
                 Height = 2,
                 Width = 2,
-                Fill = (Brush)Application.Current.MainWindow.FindResource("brightGreen"),
+                Fill = (Brush)Application.Current.MainWindow.FindResource("logo"),
             };
             trajectories.Add(el);
             Canvas.SetBottom(el, newY);
@@ -239,6 +266,7 @@ public partial class KinematicsWindow : Window
         }
     }
 
+    // змінюємо прапорець опору
     private void ToggleButton_OnChecked(object sender, RoutedEventArgs e)
     {
         StopAnimation();
@@ -251,6 +279,7 @@ public partial class KinematicsWindow : Window
         airResistanceOn = false;
     }
 
+    // оновлюємо кут нахилу пускової установки на змінні значення слайдеру
     private void AngleTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
     {
         StopAnimation();
@@ -266,6 +295,7 @@ public partial class KinematicsWindow : Window
         }
     }
 
+    // обробка події - зміна об'єкту запуску
     private void ObjectSelector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         StopAnimation();
@@ -277,7 +307,8 @@ public partial class KinematicsWindow : Window
         currentObject = objects[selected] == null ? new FlyingObject() : objects[selected];
         mass = currentObject.GetWeight();
     }
-
+    // обробка події - натиснуна кнопка "Очистити"
+    // всі точки траекторії видаляються з полотна
     private void ClearButton_OnClick(object sender, RoutedEventArgs e)
     {
         foreach (Ellipse el in trajectories)
