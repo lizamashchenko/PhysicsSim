@@ -19,7 +19,7 @@
                 <RowDefinition Height="3*"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
-            <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="True" Margin="0, 0, 5, 0" Checked="ToggleButton_OnChecked" Unchecked="ToggleButton_OnUnchecked" Name="RaysCheckBox">Show rays</CheckBox>
+            <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="False" Margin="0, 0, 5, 0" Checked="ToggleButton_OnChecked" Unchecked="ToggleButton_OnUnchecked" Name="RaysCheckBox">Show rays</CheckBox>
             <StackPanel Grid.Row="0" Grid.Column="1" Margin="5, -3, 0, 0">
                 <ComboBox Name="LensSelector" SelectionChanged="LensSelector_OnSelectionChanged">
                     <ComboBoxItem IsSelected="True" Content=""></ComboBoxItem>

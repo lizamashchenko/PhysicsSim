@@ -24,13 +24,13 @@ public partial class OpticsWindow : Window
     private double objectDistance = 200;
     private bool isConvex = false;
 
-    private Point objectBottom;
-    private Point projectionBottom;
     private Point lensCenter;
 
     private Ellipse f1, f2;
     private int focusRadius = 5;
+    
     private double f;
+    private double h;
 
     private const int amountOfOjects = 4;
     private string[] objectNames = {"Daffy", "Cat", "Dog", "Person"};
@@ -43,6 +43,7 @@ public partial class OpticsWindow : Window
     {
         InitializeComponent();
         isFirstStart = true;
+
         concaveLens.Source = new BitmapImage(new Uri("pack://application:,,,/images/concave_lens.png"));
         convexLens.Source = new BitmapImage(new Uri("pack://application:,,,/images/convex_lens.png"));
 
@@ -70,6 +71,8 @@ public partial class OpticsWindow : Window
             if (i == 0)
                 item.IsSelected = true;
             ObjectSelector.Items.Add(item);
+            FocusSlider.Value = focalDistance;
+            DistanceSlider.Value = objectDistance;
         }
     }
 
@@ -131,23 +134,13 @@ public partial class OpticsWindow : Window
             field.Children.Add(t.Item1);
             field.Children.Add(t.Item2);
         }
-
-        FocusSlider.Value = focalDistance;
-        DistanceSlider.Value = objectDistance;
-
-        Ellipse dist = new Ellipse()
-        {
-            Height = 2,
-            Width = 2,
-            Fill = new SolidColorBrush(Colors.Red)
-        };
-        Canvas.SetBottom(dist, field.ActualHeight / 2);
-        Canvas.SetLeft(dist, field.ActualWidth / 2 - objectDistance);
-        field.Children.Add(dist);
     }
 
     private void setFocuses()
     {
+        if (f1 == null || f2 == null)
+            return;
+
         Canvas.SetLeft(f1, field.ActualWidth / 2 - focalDistance - focusRadius);
         Canvas.SetLeft(f2, field.ActualWidth / 2 + focalDistance - focusRadius);
         Canvas.SetBottom(f1, field.ActualHeight / 2 - focusRadius);
@@ -160,19 +153,28 @@ public partial class OpticsWindow : Window
 
         Canvas.SetBottom(projections[objectIndex].Item1, field.ActualHeight / 2);
         Canvas.SetLeft(projections[objectIndex].Item1, field.ActualWidth / 2 - objectDistance - projections[objectIndex].Item1.ActualWidth / 2);
-        objectBottom = new Point(field.ActualWidth / 2 - objectDistance  - projections[objectIndex].Item1.ActualWidth / 2, field.ActualHeight / 2);
 
         f = focalDistance * objectDistance / (objectDistance - focalDistance);
 
         foreach (Tuple<Image, Image> t in projections)
-        {
-            t.Item2.Height = Math.Abs(f) * projections[objectIndex].Item1.ActualHeight / objectDistance;
+        { 
+            h = Math.Abs(f) * projections[objectIndex].Item1.ActualHeight / objectDistance;
+            t.Item2.Height = h;
             if (isConvex)
             {
-                t.Item2.RenderTransform = new ScaleTransform(1, -1);
-                Canvas.SetLeft(t.Item2, lensCenter.X + f - t.Item2.ActualWidth / 2);
-                Canvas.SetTop(t.Item2, field.ActualHeight / 2 + t.Item2.ActualHeight);
-                projectionBottom = new Point(lensCenter.X + f - t.Item2.ActualWidth / 2, field.ActualHeight / 2);
+                if (objectDistance >= focalDistance)
+                {
+                    Canvas.SetBottom(t.Item2, field.ActualHeight / 2 - 2 * h);
+                    t.Item2.RenderTransform = new ScaleTransform(1, -1);
+                    Canvas.SetLeft(t.Item2, lensCenter.X + f - t.Item2.ActualWidth / 2);
+                }
+                else
+                {
+                    Canvas.SetBottom(t.Item2, field.ActualHeight / 2);
+                    t.Item2.RenderTransform = new ScaleTransform(1, 1);
+                    Canvas.SetLeft(t.Item2, lensCenter.X + f - t.Item2.ActualWidth / 2);
+                }
+
             }
             else
             {
@@ -181,12 +183,13 @@ public partial class OpticsWindow : Window
                 t.Item2.RenderTransform = new ScaleTransform(1, 1);
                 Canvas.SetLeft(t.Item2, lensCenter.X + f - t.Item2.ActualWidth / 2);
                 Canvas.SetBottom(t.Item2, field.ActualHeight / 2);
-                projectionBottom = new Point(lensCenter.X + f - t.Item2.ActualWidth / 2, field.ActualHeight / 2);
             }
         }
     }
     private void DiameterSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
+        if(field == null)
+            return;
         try
         {
             objectDistance = DistanceSlider.Value;
@@ -195,13 +198,14 @@ public partial class OpticsWindow : Window
         }
         catch (Exception exception)
         {
-            DistanceSlider.Value = 1;
-            MessageBox.Show("Input a correct numeric value + ");
+            MessageBox.Show("Input a correct numeric value");
         }
     }
 
     private void FocusSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
+        if (field == null)
+            return;
         try
         {
             focalDistance = FocusSlider.Value;
@@ -210,8 +214,7 @@ public partial class OpticsWindow : Window
         }
         catch (Exception exception)
         {
-            FocusSlider.Value = 1;
-            MessageBox.Show("Input a correct numeric value"  + exception.Message);
+            MessageBox.Show("Input a correct numeric value");
         }
     }
 
@@ -257,14 +260,14 @@ public partial class OpticsWindow : Window
 
         rays.Clear();
 
-        if (isConvex)
+        if (isConvex && (objectDistance >= focalDistance))
         {
             Line principalRay1 = new Line()
             {
                 X1 = field.ActualWidth / 2 - objectDistance,
                 Y1 = field.ActualHeight / 2 - projections[objectIndex].Item1.ActualHeight,
                 X2 = field.ActualWidth / 2,
-                Y2 = field.ActualHeight / 2 + projections[objectIndex].Item2.ActualHeight,
+                Y2 = field.ActualHeight / 2 + h,
                 StrokeThickness = 1,
                 Stroke = new SolidColorBrush(Colors.Red),
                 Visibility = RaysCheckBox.IsChecked == true ? Visibility.Visible : Visibility.Hidden
@@ -272,9 +275,9 @@ public partial class OpticsWindow : Window
             Line principalRay12 = new Line()
             {
                 X1 = field.ActualWidth / 2,
-                Y1 = field.ActualHeight / 2 + projections[objectIndex].Item2.ActualHeight,
+                Y1 = field.ActualHeight / 2 + h,
                 X2 = field.ActualWidth / 2 + f,
-                Y2 = field.ActualHeight / 2 + projections[objectIndex].Item2.ActualHeight,
+                Y2 = field.ActualHeight / 2 + h,
                 StrokeThickness = 1,
                 Stroke = new SolidColorBrush(Colors.Red),
                 Visibility = RaysCheckBox.IsChecked == true ? Visibility.Visible : Visibility.Hidden
@@ -284,7 +287,7 @@ public partial class OpticsWindow : Window
                 X1 = field.ActualWidth / 2 - objectDistance,
                 Y1 = field.ActualHeight / 2 - projections[objectIndex].Item1.ActualHeight,
                 X2 = field.ActualWidth / 2 + f,
-                Y2 = field.ActualHeight / 2 + projections[objectIndex].Item2.ActualHeight,
+                Y2 = field.ActualHeight / 2 + h,
                 StrokeThickness = 1,
                 Stroke = new SolidColorBrush(Colors.Green),
                 Visibility = RaysCheckBox.IsChecked == true ? Visibility.Visible : Visibility.Hidden
@@ -304,7 +307,7 @@ public partial class OpticsWindow : Window
                 X1 = field.ActualWidth / 2,
                 Y1 = field.ActualHeight / 2 - projections[objectIndex].Item1.ActualHeight,
                 X2 = field.ActualWidth / 2 + f,
-                Y2 = field.ActualHeight / 2 + projections[objectIndex].Item2.ActualHeight,
+                Y2 = field.ActualHeight / 2 + h,
                 StrokeThickness = 1,
                 Stroke = new SolidColorBrush(Colors.Blue),
                 Visibility = RaysCheckBox.IsChecked == true ? Visibility.Visible : Visibility.Hidden
@@ -322,14 +325,77 @@ public partial class OpticsWindow : Window
             rays.Add(principalRay3);
             rays.Add(principalRay32);
         }
+        else if (isConvex)
+        {
+            Line principalRay1 = new Line()
+            {
+                X1 = field.ActualWidth / 2 - objectDistance,
+                Y1 = field.ActualHeight / 2 - projections[objectIndex].Item1.ActualHeight,
+                X2 = field.ActualWidth / 2,
+                Y2 = field.ActualHeight / 2 - projections[objectIndex].Item1.ActualHeight,
+                StrokeThickness = 1,
+                Stroke = new SolidColorBrush(Colors.Blue),
+                Visibility = RaysCheckBox.IsChecked == true ? Visibility.Visible : Visibility.Hidden
+            };
+            Line principalRay12 = new Line()
+            {
+                X1 = field.ActualWidth / 2,
+                Y1 = field.ActualHeight / 2 - projections[objectIndex].Item1.ActualHeight,
+                X2 = field.ActualWidth / 2 + focalDistance,
+                Y2 = field.ActualHeight / 2,
+                StrokeThickness = 1,
+                Stroke = new SolidColorBrush(Colors.Blue),
+                Visibility = RaysCheckBox.IsChecked == true ? Visibility.Visible : Visibility.Hidden
+            };
+            Line principalRay13 = new Line()
+            {
+                X1 = field.ActualWidth / 2,
+                Y1 = field.ActualHeight / 2 - projections[objectIndex].Item1.ActualHeight,
+                X2 = field.ActualWidth / 2 + f,
+                Y2 = field.ActualHeight / 2 - h,
+                StrokeThickness = 1,
+                StrokeDashArray = {2, 2},
+                Stroke = new SolidColorBrush(Colors.Blue),
+                Visibility = RaysCheckBox.IsChecked == true ? Visibility.Visible : Visibility.Hidden
+            };
+            Line principalRay2 = new Line()
+            {
+                X1 = field.ActualWidth / 2 - objectDistance,
+                Y1 = field.ActualHeight / 2 - projections[objectIndex].Item1.ActualHeight,
+                X2 = field.ActualWidth / 2,
+                Y2 = field.ActualHeight / 2,
+                StrokeThickness = 1,
+                Stroke = new SolidColorBrush(Colors.Green),
+                Visibility = RaysCheckBox.IsChecked == true ? Visibility.Visible : Visibility.Hidden
+            };
+            Line principalRay21 = new Line()
+            {
+                X1 = field.ActualWidth / 2 - objectDistance,
+                Y1 = field.ActualHeight / 2 - projections[objectIndex].Item1.ActualHeight,
+                X2 = field.ActualWidth / 2 + f,
+                Y2 = field.ActualHeight / 2 - h,
+                StrokeThickness = 1,
+                StrokeDashArray = {2, 2},
+                Stroke = new SolidColorBrush(Colors.Green),
+                Visibility = RaysCheckBox.IsChecked == true ? Visibility.Visible : Visibility.Hidden
+            };
+            
+
+            field.Children.Add(principalRay1);
+            field.Children.Add(principalRay12);
+            field.Children.Add(principalRay13);
+            field.Children.Add(principalRay2);
+            field.Children.Add(principalRay21);
+
+            rays.Add(principalRay1);
+            rays.Add(principalRay12);
+            rays.Add(principalRay13);
+            rays.Add(principalRay2);
+            rays.Add(principalRay21);
+        }
         else
         {
-            double objectHeight = projections[objectIndex].Item1.ActualHeight;
-            double imageHeight = projections[objectIndex].Item2.ActualHeight;
-            double objectBottomY = field.ActualHeight / 2;
-            double imageTopY = field.ActualHeight / 2 - imageHeight;
-
-           Line principalRay1 = new Line()
+            Line principalRay1 = new Line()
             {
                 X1 = field.ActualWidth / 2 - objectDistance,
                 Y1 = field.ActualHeight / 2 - projections[objectIndex].Item1.ActualHeight,
@@ -365,7 +431,7 @@ public partial class OpticsWindow : Window
                 X1 = field.ActualWidth / 2 - objectDistance,
                 Y1 = field.ActualHeight / 2 - projections[objectIndex].Item1.ActualHeight,
                 X2 = field.ActualWidth / 2,
-                Y2 = field.ActualHeight / 2 - projections[objectIndex].Item2.ActualHeight,
+                Y2 = field.ActualHeight / 2 - h,
                 StrokeThickness = 1,
                 Stroke = new SolidColorBrush(Colors.Blue),
                 Visibility = RaysCheckBox.IsChecked == true ? Visibility.Visible : Visibility.Hidden
@@ -373,9 +439,9 @@ public partial class OpticsWindow : Window
             Line principalRay32 = new Line()
             {
                 X1 = field.ActualWidth / 2,
-                Y1 = field.ActualHeight / 2 - projections[objectIndex].Item2.ActualHeight,
+                Y1 = field.ActualHeight / 2 - h,
                 X2 = field.ActualWidth / 2 + f,
-                Y2 = field.ActualHeight / 2 - projections[objectIndex].Item2.ActualHeight,
+                Y2 = field.ActualHeight / 2 - h,
                 StrokeThickness = 1,
                 Stroke = new SolidColorBrush(Colors.Blue),
                 StrokeDashArray= {2, 2},
@@ -384,7 +450,7 @@ public partial class OpticsWindow : Window
             Line principalRay33 = new Line()
             {
                 X1 = field.ActualWidth / 2,
-                Y1 = field.ActualHeight / 2 - projections[objectIndex].Item2.ActualHeight,
+                Y1 = field.ActualHeight / 2 - h,
                 X2 = field.ActualWidth / 2 + focalDistance,
                 Y2 = field.ActualHeight / 2,
                 StrokeThickness = 1,
