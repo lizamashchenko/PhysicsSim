@@ -10,16 +10,15 @@ namespace PhysicsSim;
 
 public class TrajectoryPoint
 {
+    // збурігаємо фігуру точки то інформаційного вікна
     private Ellipse point;
     private Border info;
     private bool infoSeen = false;
     
+    // параметри 
     private double distance;
     private double height;
     private double time;
-
-    private double horizontalSpeed;
-    private double verticalSpeed;
 
     public TrajectoryPoint()
     {
@@ -34,28 +33,8 @@ public class TrajectoryPoint
         createPoint();
         createInfo();
     }
-
-    // private void createVectors(Point start, bool resistant)
-    // {
-    //     Line horizontal = new Line()
-    //     {
-    //         X1 = start.X,
-    //         X2 = start.X - 10,
-    //         Y1 = start.Y,
-    //         Y2 = start.Y,
-    //         StrokeThickness = 1,
-    //         Stroke = new SolidColorBrush(Colors.Aquamarine),
-    //     };
-    //     Line vertical = new Line()
-    //     {
-    //         Y1 = start.Y,
-    //         Y2 = start.Y - 10,
-    //         X1 = start.X,
-    //         X2 = start.X,
-    //         StrokeThickness = 1,
-    //         Stroke = new SolidColorBrush(Colors.Aquamarine),
-    //     };
-    // }
+    
+    // ініціалізація точки
     private void createPoint()
     {
         point = new Ellipse()
@@ -67,6 +46,8 @@ public class TrajectoryPoint
         point.PreviewMouseLeftButtonDown += PointOnMouseLeftButtonDown;
     }
 
+    // обробка події - натиснуто на точку
+    // відкривається інформація
     private void PointOnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
         if (!infoSeen)
@@ -85,39 +66,48 @@ public class TrajectoryPoint
         point.Visibility = Visibility.Visible;
     }
 
-    
-
+    // робить точку видимою
     public void showPoint()
     {
         point.Visibility = Visibility.Visible;
     }
 
+    // створення вікна з інформацією
     private void createInfo()
     {
         info = new Border()
         {
             BorderBrush = Brushes.Transparent,
-            Background = Brushes.Beige,
+            Background = (Brush)Application.Current.MainWindow.FindResource("logoLight"),
         };
         Label heightLabel = new Label()
         {
             Content = "Height: " + height,
+            FontFamily = new FontFamily("Constantia"),
+            Foreground = (Brush)Application.Current.MainWindow.FindResource("logoBright")
         };
         Label distanceLabel = new Label()
         {
             Content = "Distance: " + distance,
+            FontFamily = new FontFamily("Constantia"),
+            Foreground = (Brush)Application.Current.MainWindow.FindResource("logoBright")
         };
         Label timeLabel = new Label()
         {
             Content = "Time: " + time + " s",
+            FontFamily = new FontFamily("Constantia"),
+            Foreground = (Brush)Application.Current.MainWindow.FindResource("logoBright")
         };
             
         Style borderStyle = new Style(typeof(Border));
         borderStyle.Setters.Add(new Setter(Border.CornerRadiusProperty, new CornerRadius(10)));
         Button cancel = new Button()
         {
-            Content = "Cancel",
+            Content = "Close",
             Width = 50,
+            FontFamily = new FontFamily("Constantia"),
+            Background = (Brush)Application.Current.MainWindow.FindResource("logo"),
+            Foreground = (Brush)Application.Current.MainWindow.FindResource("logoBright")
         };
         cancel.Resources.Add(typeof(Border), borderStyle);
         cancel.Click += CancelOnClick;
@@ -131,6 +121,8 @@ public class TrajectoryPoint
         info.Visibility = Visibility.Hidden;
     }
 
+    // обробка події - натиснуто на "Закрити"
+    // вікно зникає
     private void CancelOnClick(object sender, RoutedEventArgs e)
     {
         this.info.Visibility = Visibility.Hidden;
