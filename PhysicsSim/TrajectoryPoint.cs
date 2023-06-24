@@ -20,6 +20,7 @@ public class TrajectoryPoint
     private double height;
     private double time;
 
+    private static double pointR = 3;
     public TrajectoryPoint()
     {
         
@@ -39,9 +40,10 @@ public class TrajectoryPoint
     {
         point = new Ellipse()
         {
-            Height = 3,
-            Width = 3,
+            Height = 2 * pointR,
+            Width = 2 * pointR,
             Fill = (Brush)Application.Current.MainWindow.FindResource("logoBright"),
+            Stroke = (Brush)Application.Current.MainWindow.FindResource("logo"),
         };
         point.PreviewMouseLeftButtonDown += PointOnMouseLeftButtonDown;
     }
@@ -82,13 +84,13 @@ public class TrajectoryPoint
         };
         Label heightLabel = new Label()
         {
-            Content = "Height: " + height,
+            Content = "Height: " + Double.Round(height, 3),
             FontFamily = new FontFamily("Constantia"),
             Foreground = (Brush)Application.Current.MainWindow.FindResource("logoBright")
         };
         Label distanceLabel = new Label()
         {
-            Content = "Distance: " + distance,
+            Content = "Distance: " + Double.Round(distance, 3),
             FontFamily = new FontFamily("Constantia"),
             Foreground = (Brush)Application.Current.MainWindow.FindResource("logoBright")
         };
@@ -131,6 +133,11 @@ public class TrajectoryPoint
     public Ellipse GetPoint()
     {
         return point;
+    }
+
+    public double getR()
+    {
+        return pointR;
     }
 
     public Border GetInfo()

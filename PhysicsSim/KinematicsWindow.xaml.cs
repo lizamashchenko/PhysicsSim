@@ -24,9 +24,9 @@ public partial class KinematicsWindow : Window
     private Point himarsLauncherLowRigth;
 
     // параметри цілі
-    private double kremlinDistance = 500;
+    private double kremlinDistance = 750;
     private double kremlinWidth = 200;
-    private double kremlinHeight = 100;
+    private double kremlinHeight = 200;
 
     private Image kremlin = new Image();
     private Image kremlinOnFire = new Image();
@@ -57,7 +57,6 @@ public partial class KinematicsWindow : Window
         InitializeComponent();
         // ініціалізація об'єктів
         CreateObjects();
-        himarsLauncherLowLeft = new Point(5, 40 - himarsLauncher.ActualHeight);
         
         // ініціалізація цілі
         kremlin = new Image
@@ -85,6 +84,16 @@ public partial class KinematicsWindow : Window
         
         field.Children.Add(kremlin);
         field.Children.Add(kremlinOnFire);
+        himarsLauncherLowLeft = new Point(8, 65);
+        Ellipse el = new Ellipse()
+        {
+            Height = 3,
+            Width = 3,
+            Fill = new SolidColorBrush(Colors.Red),
+        };
+        Canvas.SetLeft(el, himarsLauncherLowLeft.X);
+        Canvas.SetBottom(el, himarsLauncherLowLeft.Y);
+        field.Children.Add(el);
     }
 
     // створюємо об'єкти запуску
@@ -236,8 +245,8 @@ public partial class KinematicsWindow : Window
         if (pointInTime % 1000 == 0)
         {
             TrajectoryPoint p = new TrajectoryPoint(newX, newY, pointInTime / 1000.0);
-            Canvas.SetBottom(p.GetPoint(), newY);
-            Canvas.SetLeft(p.GetPoint(), newX);
+            Canvas.SetBottom(p.GetPoint(), newY - p.getR());
+            Canvas.SetLeft(p.GetPoint(), newX - p.getR());
             Canvas.SetZIndex(p.GetPoint(), 1);
             p.showPoint();
             field.Children.Add(p.GetPoint());
